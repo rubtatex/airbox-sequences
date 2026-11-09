@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
-<title>Séquences Airbox</title>
-<meta name="description" content="Créez, modifiez et partagez des séquences pour l'Airbox.">
+<title>Airbox Sequences</title>
+<meta name="description" content="Create, edit and share sequences for the Airbox.">
 <link rel="icon" type="image/png" href="icon.png">
 <link rel="apple-touch-icon" href="icon.png">
 <style>
@@ -40,8 +40,14 @@ button,input,select,textarea{font:inherit;color:inherit}
 .nav a{padding:16px 12px;font-size:.92rem;color:var(--muted);text-decoration:none;border-bottom:2px solid transparent}
 .nav a:hover{color:var(--fg)}
 .nav a[aria-current="page"]{color:var(--fg);font-weight:600;border-bottom-color:var(--accent)}
-.site .ext{margin-left:auto;font-size:.88rem;color:var(--muted);text-decoration:none}
+.site .ext{font-size:.88rem;color:var(--muted);text-decoration:none}
 .site .ext:hover{color:var(--fg)}
+.right{margin-left:auto;display:flex;align-items:center;gap:14px}
+.lang{display:flex;gap:4px}
+.flag{display:grid;place-items:center;width:36px;height:30px;border-radius:6px;border:1px solid var(--line);background:var(--panel);cursor:pointer;opacity:.6;padding:0}
+.flag:hover{opacity:1}
+.flag[aria-pressed="true"]{opacity:1;border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.flag svg{display:block;width:24px;height:auto;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.15)}
 main{max-width:1000px;margin:0 auto;padding:22px 16px 56px}
 h1{font-size:1.4rem;margin:0 0 4px}
 h2{font-size:1.05rem;margin:22px 0 8px}
@@ -143,82 +149,88 @@ dialog .actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;mar
 <body>
 <header class="site">
   <div class="site-in">
-    <a class="brand" href="#editeur"><img src="icon.png" alt="" width="30" height="30">Séquences Airbox</a>
+    <a class="brand" href="#editeur"><img src="icon.png" alt="" width="30" height="30"><span data-i18n="brand">Airbox Sequences</span></a>
     <nav class="nav" aria-label="Pages">
-      <a href="#editeur" data-nav="editeur">Éditeur</a>
-      <a href="#catalogue" data-nav="catalogue">Catalogue</a>
-      <a href="#format" data-nav="format">Format</a>
+      <a href="#editeur" data-nav="editeur" data-i18n="nav_editor">Editor</a>
+      <a href="#catalogue" data-nav="catalogue" data-i18n="nav_catalog">Catalog</a>
+      <a href="#format" data-nav="format" data-i18n="nav_format">Format</a>
     </nav>
-    <a class="ext" href="https://github.com/rubtatex/airbox-sequences" target="_blank" rel="noopener">GitHub ↗</a>
+    <div class="right">
+      <div class="lang" role="group" id="lang-group">
+        <button class="flag" type="button" data-lang="en" aria-pressed="false" aria-label="English" title="English"><svg viewBox="0 0 60 30" aria-hidden="true"><rect width="60" height="30" fill="#012169"/><path d="M0,0 60,30M60,0 0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 60,30M60,0 0,30" stroke="#C8102E" stroke-width="2"/><path d="M30,0v30M0,15h60" stroke="#fff" stroke-width="10"/><path d="M30,0v30M0,15h60" stroke="#C8102E" stroke-width="6"/></svg></button>
+        <button class="flag" type="button" data-lang="fr" aria-pressed="false" aria-label="Français" title="Français"><svg viewBox="0 0 60 40" aria-hidden="true"><rect width="20" height="40" fill="#0055A4"/><rect x="20" width="20" height="40" fill="#fff"/><rect x="40" width="20" height="40" fill="#EF4135"/></svg></button>
+      </div>
+      <a class="ext" href="https://github.com/rubtatex/airbox-sequences" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
   </div>
 </header>
 
 <main>
   <!-- Editor -->
   <section class="view" id="view-editeur" aria-labelledby="t-editeur">
-    <h1 id="t-editeur">Éditeur de séquences</h1>
-    <p class="muted" style="margin:0;max-width:70ch">Une séquence pilote les trois relais de l'Airbox : Air, Re-Breath et Aroma. Construisez-la ici, vérifiez sa durée et ses plafonds, puis exportez le fichier ou proposez-le à la communauté.</p>
+    <h1 id="t-editeur" data-i18n="ed_title">Sequence editor</h1>
+    <p class="muted" style="margin:0;max-width:70ch" data-i18n="ed_intro"></p>
     <div class="editor">
       <div class="col">
         <div class="panel form">
-          <label for="f-name">Nom</label><input class="input" id="f-name" maxlength="80" autocomplete="off">
-          <label for="f-author">Auteur</label><input class="input" id="f-author" maxlength="500" autocomplete="off">
-          <label for="f-desc">Description</label><input class="input" id="f-desc" maxlength="500" autocomplete="off">
+          <label for="f-name" data-i18n="lbl_name">Name</label><input class="input" id="f-name" maxlength="80" autocomplete="off">
+          <label for="f-author" data-i18n="lbl_author">Author</label><input class="input" id="f-author" maxlength="500" autocomplete="off">
+          <label for="f-desc" data-i18n="lbl_desc">Description</label><input class="input" id="f-desc" maxlength="500" autocomplete="off">
         </div>
         <div class="steps" id="steps"></div>
         <div class="add" id="root-add"></div>
       </div>
-      <aside class="side" aria-label="Analyse et actions">
+      <aside class="side" id="side">
         <div class="panel pad" style="display:flex;flex-direction:column;gap:10px">
-          <div><span class="sub">Durée</span><div class="big" id="a-duration">0 s</div></div>
+          <div><span class="sub" data-i18n="lbl_duration">Duration</span><div class="big" id="a-duration">0 s</div></div>
           <div class="sub" id="a-meta"></div>
           <div id="a-status"></div>
           <div class="caps">
-            <label for="cap-rebreath">Plafond Re-Breath (s)</label><input class="num" id="cap-rebreath" type="number" min="5" max="300" inputmode="numeric">
-            <label for="cap-air">Plafond Air (s)</label><input class="num" id="cap-air" type="number" min="5" max="300" inputmode="numeric">
+            <label for="cap-rebreath" data-i18n="cap_rebreath">Re-Breath cap (s)</label><input class="num" id="cap-rebreath" type="number" min="5" max="300" inputmode="numeric">
+            <label for="cap-air" data-i18n="cap_air">Air cap (s)</label><input class="num" id="cap-air" type="number" min="5" max="300" inputmode="numeric">
           </div>
         </div>
-        <button class="btn" id="b-propose" type="button">Proposer à la communauté</button>
-        <button class="btn alt" id="b-export" type="button">Exporter le fichier</button>
-        <button class="btn alt" id="b-import" type="button">Importer un fichier</button>
-        <button class="btn alt" id="b-new" type="button">Nouvelle séquence</button>
+        <button class="btn" id="b-propose" type="button" data-i18n="b_propose">Propose to the community</button>
+        <button class="btn alt" id="b-export" type="button" data-i18n="b_export">Export the file</button>
+        <button class="btn alt" id="b-import" type="button" data-i18n="b_import">Import a file</button>
+        <button class="btn alt" id="b-new" type="button" data-i18n="b_new">New sequence</button>
         <input id="file" type="file" accept=".json,application/json" hidden>
-        <span class="saved">Brouillon enregistré dans ce navigateur</span>
+        <span class="saved" data-i18n="saved">Draft saved in this browser</span>
       </aside>
     </div>
   </section>
 
   <!-- Catalog -->
   <section class="view" id="view-catalogue" aria-labelledby="t-catalogue" hidden>
-    <h1 id="t-catalogue">Catalogue</h1>
-    <p class="muted" style="margin:0 0 16px">Les séquences partagées par la communauté. « Ouvrir dans l'éditeur » les charge pour les modifier.</p>
+    <h1 id="t-catalogue" data-i18n="cat_title">Catalog</h1>
+    <p class="muted" style="margin:0 0 16px" data-i18n="cat_intro"></p>
     <div id="catalog"></div>
   </section>
 
   <!-- Format -->
   <section class="view prose" id="view-format" aria-labelledby="t-format" hidden>
-    <h1 id="t-format">Format des séquences</h1>
-    <p class="muted">Un fichier <code>.airbox.json</code> contient des données seulement : des relais, des attentes et des groupes. Jamais de code.</p>
-    <h2>Les éléments</h2>
+    <h1 id="t-format" data-i18n="fmt_title">Sequence format</h1>
+    <p class="muted" data-i18n-html="fmt_intro"></p>
+    <h2 data-i18n="fmt_h_blocks">The building blocks</h2>
     <div class="panel"><table>
-      <tr><th>Élément</th><th>Effet</th></tr>
-      <tr><td>Commande</td><td>Règle un relais : Air fermer ou ouvrir, Re-Breath ouvrir ou fermer, Aroma démarrer ou arrêter.</td></tr>
-      <tr><td>Attente</td><td>Pause de 1 s à 1 h, fixe ou tirée au hasard entre deux valeurs à chaque passage.</td></tr>
-      <tr><td>Ensemble</td><td>Ses étapes démarrent au même moment. Le groupe se termine avec la plus longue.</td></tr>
-      <tr><td>Répéter</td><td>Joue ses étapes de 1 à 100 fois. Les boucles peuvent en contenir d'autres.</td></tr>
+      <tr><th data-i18n="th_block">Block</th><th data-i18n="th_effect">Effect</th></tr>
+      <tr><td data-i18n="tag_relay">Command</td><td data-i18n="fmt_cmd"></td></tr>
+      <tr><td data-i18n="tag_wait">Wait</td><td data-i18n="fmt_wait"></td></tr>
+      <tr><td data-i18n="tag_together">Together</td><td data-i18n="fmt_together"></td></tr>
+      <tr><td data-i18n="tag_repeat">Repeat</td><td data-i18n="fmt_repeat"></td></tr>
     </table></div>
-    <h2>Limites</h2>
+    <h2 data-i18n="fmt_h_limits">Limits</h2>
     <ul>
-      <li>500 étapes par séquence, 4 niveaux d'imbrication au plus.</li>
-      <li>Au plus 5000 commandes une fois la séquence déroulée.</li>
-      <li>La durée affichée va du cas le plus court au plus long. Les alertes de plafond utilisent le cas le plus long.</li>
-      <li>Le firmware coupe Re-Breath ouvert et Air fermé au bout de leur plafond (120 s par défaut), quelle que soit la séquence.</li>
+      <li data-i18n="fmt_l1"></li>
+      <li data-i18n="fmt_l2"></li>
+      <li data-i18n="fmt_l3"></li>
+      <li data-i18n="fmt_l4"></li>
     </ul>
-    <h2>En savoir plus</h2>
+    <h2 data-i18n="fmt_h_more">Learn more</h2>
     <ul>
-      <li><a href="https://github.com/rubtatex/airbox-sequences/blob/main/FORMAT.md" target="_blank" rel="noopener">Description complète du format</a></li>
-      <li><a href="https://github.com/rubtatex/airbox-sequences/blob/main/schema.json" target="_blank" rel="noopener">Schéma JSON</a></li>
-      <li>Dans l'app Airbox : onglet Séquences, menu ⋯, Parcourir la communauté.</li>
+      <li><a href="https://github.com/rubtatex/airbox-sequences/blob/main/FORMAT.md" target="_blank" rel="noopener" data-i18n="fmt_link1">Full format description</a></li>
+      <li><a href="https://github.com/rubtatex/airbox-sequences/blob/main/schema.json" target="_blank" rel="noopener" data-i18n="fmt_link2">JSON schema</a></li>
+      <li data-i18n="fmt_l5"></li>
     </ul>
   </section>
 </main>
@@ -230,14 +242,132 @@ dialog .actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;mar
 (function () {
   'use strict';
 
+
+  // ---- translations (English and French) ----
+  var T = {
+    en: {
+      brand: 'Airbox Sequences', nav_editor: 'Editor', nav_catalog: 'Catalog', nav_format: 'Format',
+      ed_title: 'Sequence editor',
+      ed_intro: 'A sequence drives the three relays of the Airbox: Air, Re-Breath and Aroma. Build it here, check its duration and caps, then export the file or propose it to the community.',
+      lbl_name: 'Name', lbl_author: 'Author', lbl_desc: 'Description', lbl_duration: 'Duration',
+      cap_rebreath: 'Re-Breath cap (s)', cap_air: 'Air cap (s)',
+      b_propose: 'Propose to the community', b_export: 'Export the file', b_import: 'Import a file', b_new: 'New sequence', saved: 'Draft saved in this browser',
+      cat_title: 'Catalog', cat_intro: 'Sequences shared by the community. “Open in the editor” loads one so you can change it.',
+      fmt_title: 'Sequence format', fmt_intro: 'An <code>.airbox.json</code> file holds data only: relays, waits and groups. Never code.',
+      fmt_h_blocks: 'The building blocks', th_block: 'Block', th_effect: 'Effect',
+      fmt_cmd: 'Sets one relay: Air close or open, Re-Breath open or close, Aroma start or stop.',
+      fmt_wait: 'A pause from 1 s to 1 h, fixed or drawn at random between two values each time it runs.',
+      fmt_together: 'Its steps start at the same moment. The group ends with the longest one.',
+      fmt_repeat: 'Plays its steps 1 to 100 times. Loops can contain other loops.',
+      fmt_h_limits: 'Limits', fmt_l1: '500 steps per sequence, 4 nesting levels at most.', fmt_l2: 'At most 5000 commands once the sequence is unrolled.',
+      fmt_l3: 'The duration shown goes from the shortest to the longest case. Cap alerts use the longest case.',
+      fmt_l4: 'The firmware cuts Re-Breath open and Air closed when they reach their cap (120 s by default), whatever the sequence.',
+      fmt_h_more: 'Learn more', fmt_link1: 'Full format description', fmt_link2: 'JSON schema', fmt_l5: 'In the Airbox app: Sequences tab, ⋯ menu, Browse the community.',
+      tag_relay: 'Command', tag_wait: 'Wait', tag_rand: 'Random', tag_repeat: 'Repeat', tag_together: 'Together',
+      act_close: 'close', act_open: 'open', act_start: 'start', act_stop: 'stop',
+      lbl_relay: 'Relay', lbl_action: 'Action', lbl_waittype: 'Wait type', mode_fixed: 'fixed', mode_random: 'random',
+      lbl_secs: 'Duration in seconds', lbl_min: 'Minimum in seconds', lbl_max: 'Maximum in seconds', to: 'to', times: 'times', lbl_count: 'Number of repeats',
+      together_hint: 'steps start at the same time',
+      menu_aria: 'Step actions', m_up: 'Move up', m_down: 'Move down', m_dup: 'Duplicate', m_del: 'Delete',
+      add_cmd: '+ Command', add_wait: '+ Wait', add_together: '+ Together', add_repeat: '+ Repeat',
+      empty_steps: 'No steps yet. Add a command, a wait or a group.',
+      action_one: 'action', action_many: 'actions', ok_caps: 'Within the caps',
+      warn_open: '{r} stays open for {s} s', warn_closed: '{r} stays closed for {s} s',
+      warn_detail: ' The firmware cuts it at {cap} s: the sequence goes on, but the relay returns to its safe state before this step ends.',
+      p_name: 'Give the sequence a name.', p_steps: 'Add at least one step.', p_toomany: 'Too many steps: {n}, at most {max}.',
+      p_bad1: '{n} value is out of range (waits from 1 to 3600 s, repeats from 1 to 100).', p_badn: '{n} values are out of range (waits from 1 to 3600 s, repeats from 1 to 100).',
+      p_large: 'Sequence too large: at most {max} commands once unrolled.',
+      e_toomany: 'too many steps', e_stepobj: 'a step must be an object', e_shape: 'each step is a command, a wait, a “together” group or a “repeat” group',
+      e_cmd: 'invalid command', e_waitform: 'a wait is a number of seconds or {min, max}', e_waitrange: 'a wait is from 1 to {max} seconds, with min ≤ max',
+      e_depth: 'groups nested too deeply', e_together: '“together” must be a list', e_repeat: 'a repeat needs a number from 1 to {max} and its steps',
+      e_toobig: 'file too large', e_json: 'this file is not valid JSON', e_notseq: 'this file is not an Airbox sequence', e_version: 'unsupported format version: {v}',
+      e_manyseq: 'too many sequences in this file', e_noseq: 'no sequence in this file', e_large: 'this sequence is too large to run', imported_name: 'Imported sequence',
+      replace_title: 'Replace the current sequence?', replace_body: 'The sequence “{name}” will be replaced. Export it first if you want to keep it.', unnamed: 'unnamed',
+      cancel: 'Cancel', replace: 'Replace', opened_toast: '“{name}” opened in the editor.', choose_title: 'Choose a sequence', choose_body: '{file} contains {n} sequences.',
+      exported: 'File exported.', toast_big: 'File too large.', import_fail: 'Import failed: {m}.', import_fail0: 'Import failed.',
+      prop_title: 'Propose “{name}”', prop_1: 'Check the name and author: they will be published as they are.', prop_2: 'GitHub opens on a new file already filled in. Sign in if needed.',
+      prop_3: 'Click “Propose new file”, then “Create pull request”.', prop_file: 'File name',
+      prop_note: 'An automatic check validates the file, and a maintainer reviews every proposal before it is merged.', prop_author: ' Fill in the author if you want to be credited.',
+      prop_open: 'Open GitHub ↗', prop_err_name: 'Lowercase letters, digits and dashes only.', prop_err_exists: 'This name already exists in the catalog: choose another.',
+      prop_err_long: 'The sequence is too long for a link. Export the file, then add it by hand on GitHub.',
+      cat_loading: 'Loading the catalog…', cat_error: 'The catalog could not be loaded ({m}).', retry: 'Retry', cat_empty: 'The catalog is empty for now. Be the first to propose a sequence.',
+      th_seq: 'Sequence', th_author: 'Author', th_duration: 'Duration', th_relays: 'Relays', up_to: 'up to {d}', open_editor: 'Open in the editor',
+      cat_invalid: 'Invalid catalog entry.', open_fail: 'Could not open this sequence.', open_fail_m: 'Could not open this sequence: {m}.',
+      default_name: 'Square breathing', default_desc: 'Re-Breath in four equal beats, six times.', lang_label: 'Language',
+      page_editor: 'Editor', page_catalog: 'Catalog', page_format: 'Format', doc_desc: 'Create, edit and share sequences for the Airbox.'
+    },
+    fr: {
+      brand: 'Séquences Airbox', nav_editor: 'Éditeur', nav_catalog: 'Catalogue', nav_format: 'Format',
+      ed_title: 'Éditeur de séquences',
+      ed_intro: "Une séquence pilote les trois relais de l'Airbox : Air, Re-Breath et Aroma. Construisez-la ici, vérifiez sa durée et ses plafonds, puis exportez le fichier ou proposez-le à la communauté.",
+      lbl_name: 'Nom', lbl_author: 'Auteur', lbl_desc: 'Description', lbl_duration: 'Durée',
+      cap_rebreath: 'Plafond Re-Breath (s)', cap_air: 'Plafond Air (s)',
+      b_propose: 'Proposer à la communauté', b_export: 'Exporter le fichier', b_import: 'Importer un fichier', b_new: 'Nouvelle séquence', saved: 'Brouillon enregistré dans ce navigateur',
+      cat_title: 'Catalogue', cat_intro: "Les séquences partagées par la communauté. « Ouvrir dans l'éditeur » les charge pour les modifier.",
+      fmt_title: 'Format des séquences', fmt_intro: 'Un fichier <code>.airbox.json</code> contient des données seulement : des relais, des attentes et des groupes. Jamais de code.',
+      fmt_h_blocks: 'Les éléments', th_block: 'Élément', th_effect: 'Effet',
+      fmt_cmd: 'Règle un relais : Air fermer ou ouvrir, Re-Breath ouvrir ou fermer, Aroma démarrer ou arrêter.',
+      fmt_wait: 'Pause de 1 s à 1 h, fixe ou tirée au hasard entre deux valeurs à chaque passage.',
+      fmt_together: 'Ses étapes démarrent au même moment. Le groupe se termine avec la plus longue.',
+      fmt_repeat: "Joue ses étapes de 1 à 100 fois. Les boucles peuvent en contenir d'autres.",
+      fmt_h_limits: 'Limites', fmt_l1: "500 étapes par séquence, 4 niveaux d'imbrication au plus.", fmt_l2: 'Au plus 5000 commandes une fois la séquence déroulée.',
+      fmt_l3: "La durée affichée va du cas le plus court au plus long. Les alertes de plafond utilisent le cas le plus long.",
+      fmt_l4: 'Le firmware coupe Re-Breath ouvert et Air fermé au bout de leur plafond (120 s par défaut), quelle que soit la séquence.',
+      fmt_h_more: 'En savoir plus', fmt_link1: 'Description complète du format', fmt_link2: 'Schéma JSON', fmt_l5: "Dans l'app Airbox : onglet Séquences, menu ⋯, Parcourir la communauté.",
+      tag_relay: 'Commande', tag_wait: 'Attente', tag_rand: 'Au hasard', tag_repeat: 'Répéter', tag_together: 'Ensemble',
+      act_close: 'fermer', act_open: 'ouvrir', act_start: 'démarrer', act_stop: 'arrêter',
+      lbl_relay: 'Relais', lbl_action: 'Action', lbl_waittype: "Type d'attente", mode_fixed: 'fixe', mode_random: 'au hasard',
+      lbl_secs: 'Durée en secondes', lbl_min: 'Minimum en secondes', lbl_max: 'Maximum en secondes', to: 'à', times: 'fois', lbl_count: 'Nombre de répétitions',
+      together_hint: 'les étapes démarrent en même temps',
+      menu_aria: 'Actions sur cette étape', m_up: 'Monter', m_down: 'Descendre', m_dup: 'Dupliquer', m_del: 'Supprimer',
+      add_cmd: '+ Commande', add_wait: '+ Attente', add_together: '+ Ensemble', add_repeat: '+ Répéter',
+      empty_steps: 'Aucune étape. Ajoutez une commande, une attente ou un groupe.',
+      action_one: 'action', action_many: 'actions', ok_caps: 'Dans les plafonds',
+      warn_open: '{r} reste ouvert {s} s', warn_closed: '{r} reste fermé {s} s',
+      warn_detail: " Le firmware coupe à {cap} s : la séquence continue, mais le relais revient à l'état sûr avant la fin de cette étape.",
+      p_name: 'Donnez un nom à la séquence.', p_steps: 'Ajoutez au moins une étape.', p_toomany: "Trop d'étapes : {n} sur {max} au plus.",
+      p_bad1: '{n} valeur est hors limites (attentes de 1 à 3600 s, répétitions de 1 à 100).', p_badn: '{n} valeurs sont hors limites (attentes de 1 à 3600 s, répétitions de 1 à 100).',
+      p_large: 'Séquence trop grande : au plus {max} commandes une fois déroulée.',
+      e_toomany: "trop d'étapes", e_stepobj: 'une étape doit être un objet', e_shape: "chaque étape est une commande, une attente, un groupe « ensemble » ou « répéter »",
+      e_cmd: 'commande invalide', e_waitform: 'une attente est un nombre de secondes ou {min, max}', e_waitrange: 'une attente va de 1 à {max} secondes, avec min ≤ max',
+      e_depth: 'groupes imbriqués sur trop de niveaux', e_together: '« together » est une liste', e_repeat: 'une répétition demande un nombre de 1 à {max} et ses étapes',
+      e_toobig: 'fichier trop gros', e_json: "ce fichier n'est pas du JSON valide", e_notseq: "ce fichier n'est pas une séquence Airbox", e_version: 'version de format non prise en charge : {v}',
+      e_manyseq: 'trop de séquences dans ce fichier', e_noseq: 'aucune séquence dans ce fichier', e_large: 'cette séquence est trop grande pour être jouée', imported_name: 'Séquence importée',
+      replace_title: 'Remplacer la séquence en cours ?', replace_body: "La séquence « {name} » sera remplacée. Pensez à l'exporter d'abord si vous voulez la garder.", unnamed: 'sans nom',
+      cancel: 'Annuler', replace: 'Remplacer', opened_toast: "« {name} » ouverte dans l'éditeur.", choose_title: 'Choisissez une séquence', choose_body: '{file} contient {n} séquences.',
+      exported: 'Fichier exporté.', toast_big: 'Fichier trop gros.', import_fail: 'Import impossible : {m}.', import_fail0: 'Import impossible.',
+      prop_title: 'Proposer « {name} »', prop_1: "Vérifiez le nom et l'auteur : ils seront publiés tels quels.", prop_2: "GitHub s'ouvre sur un nouveau fichier déjà rempli. Connectez-vous si besoin.",
+      prop_3: 'Cliquez « Propose new file », puis « Create pull request ».', prop_file: 'Nom du fichier',
+      prop_note: 'Une vérification automatique contrôle le fichier, et un mainteneur relit chaque proposition avant fusion.', prop_author: " Pensez à renseigner l'auteur si vous voulez être crédité.",
+      prop_open: 'Ouvrir GitHub ↗', prop_err_name: 'Lettres minuscules, chiffres et tirets seulement.', prop_err_exists: 'Ce nom existe déjà dans le catalogue : choisissez-en un autre.',
+      prop_err_long: 'La séquence est trop longue pour un lien. Exportez le fichier, puis ajoutez-le à la main sur GitHub.',
+      cat_loading: 'Chargement du catalogue…', cat_error: "Le catalogue n'a pas pu être chargé ({m}).", retry: 'Réessayer', cat_empty: "Le catalogue est vide pour l'instant. Soyez le premier à proposer une séquence.",
+      th_seq: 'Séquence', th_author: 'Auteur', th_duration: 'Durée', th_relays: 'Relais', up_to: "jusqu'à {d}", open_editor: "Ouvrir dans l'éditeur",
+      cat_invalid: 'Entrée de catalogue invalide.', open_fail: "Impossible d'ouvrir cette séquence.", open_fail_m: "Impossible d'ouvrir cette séquence : {m}.",
+      default_name: 'Respiration carrée', default_desc: 'Re-Breath en quatre temps égaux, six fois.', lang_label: 'Langue',
+      page_editor: 'Éditeur', page_catalog: 'Catalogue', page_format: 'Format', doc_desc: "Créez, modifiez et partagez des séquences pour l'Airbox."
+    }
+  };
+  var lang = 'en';
+  function t(key, vars) {
+    var str = (T[lang] && T[lang][key]) || T.en[key] || key;
+    if (vars) Object.keys(vars).forEach(function (k) { str = str.split('{' + k + '}').join(vars[k]); });
+    return str;
+  }
+  (function () {
+    var saved = null;
+    try { saved = localStorage.getItem('airbox-seq-lang'); } catch (e) { /* private mode */ }
+    lang = saved === 'fr' || saved === 'en' ? saved : ((navigator.language || 'en').toLowerCase().indexOf('fr') === 0 ? 'fr' : 'en');
+  })();
+
   // ---- constants: the same bounds as the Airbox app and scripts/build_index.py ----
   var LIM = { file: 1000000, seqs: 100, steps: 500, depth: 4, repeat: 100, wait: 3600, actions: 5000, visits: 50000, name: 80, text: 500 };
   var REPO = 'rubtatex/airbox-sequences';
   var RAW = 'https://raw.githubusercontent.com/' + REPO + '/main/';
   var RELAYS = {
-    air:      { label: 'Air',       acts: [['close', 'fermer'], ['open', 'ouvrir']],      on: 'close' },
-    rebreath: { label: 'Re-Breath', acts: [['open', 'ouvrir'], ['close', 'fermer']],      on: 'open' },
-    aroma:    { label: 'Aroma',     acts: [['start', 'démarrer'], ['stop', 'arrêter']],   on: 'start' }
+    air:      { label: 'Air',       acts: [['close'], ['open']],     on: 'close' },
+    rebreath: { label: 'Re-Breath', acts: [['open'], ['close']],     on: 'open' },
+    aroma:    { label: 'Aroma',     acts: [['start'], ['stop']],     on: 'start' }
   };
   var NAME_RE = /^[a-z0-9]+(-[a-z0-9]+)*$/;
   var DRAFT_KEY = 'airbox-seq-draft', CAPS_KEY = 'airbox-seq-caps';
@@ -249,7 +379,7 @@ dialog .actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;mar
 
   function defaultSequence() {
     return {
-      name: 'Respiration carrée', author: '', description: 'Re-Breath en quatre temps égaux, six fois.',
+      name: t('default_name'), author: '', description: t('default_desc'),
       steps: [{ type: 'repeat', count: 6, children: [
         { type: 'relay', relay: 'rebreath', action: 'open' },
         { type: 'wait', random: false, min: 4, max: 4 },
@@ -363,10 +493,10 @@ dialog .actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;mar
   // ---- validation: the same rules as the app and scripts/build_index.py ----
   function problems() {
     var out = [];
-    if (!seq.name.trim()) out.push('Donnez un nom à la séquence.');
-    if (!seq.steps.length) out.push('Ajoutez au moins une étape.');
+    if (!seq.name.trim()) out.push(t('p_name'));
+    if (!seq.steps.length) out.push(t('p_steps'));
     var total = countSteps(seq.steps);
-    if (total > LIM.steps) out.push('Trop d\'étapes : ' + total + ' sur ' + LIM.steps + ' au plus.');
+    if (total > LIM.steps) out.push(t('p_toomany', { n: total, max: LIM.steps }));
     var bad = 0;
     (function walk(list) {
       list.forEach(function (n) {
@@ -378,8 +508,8 @@ dialog .actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;mar
         if (n.children) walk(n.children);
       });
     })(seq.steps);
-    if (bad) out.push(bad + (bad > 1 ? ' valeurs sont' : ' valeur est') + ' hors limites (attentes de 1 à 3600 s, répétitions de 1 à 100).');
-    if (!bad && analyse(seq.steps).tooLarge) out.push('Séquence trop grande : au plus ' + LIM.actions + ' commandes une fois déroulée.');
+    if (bad) out.push(t(bad > 1 ? 'p_badn' : 'p_bad1', { n: bad }));
+    if (!bad && analyse(seq.steps).tooLarge) out.push(t('p_large', { max: LIM.actions }));
     return out;
   }
 
@@ -400,53 +530,53 @@ dialog .actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;mar
   function Invalid(msg) { this.message = msg; }
   function fileStep(s, depth, budget) {
     budget.n--;
-    if (budget.n < 0) throw new Invalid('trop d\'étapes');
-    if (!s || typeof s !== 'object' || Array.isArray(s)) throw new Invalid('une étape doit être un objet');
+    if (budget.n < 0) throw new Invalid(t('e_toomany'));
+    if (!s || typeof s !== 'object' || Array.isArray(s)) throw new Invalid(t('e_stepobj'));
     var shapes = [('relay' in s) || ('do' in s), 'wait' in s, 'together' in s, ('repeat' in s) || ('steps' in s)];
-    if (shapes.filter(Boolean).length !== 1) throw new Invalid('chaque étape est une commande, une attente, un groupe « ensemble » ou « répéter »');
+    if (shapes.filter(Boolean).length !== 1) throw new Invalid(t('e_shape'));
     if (shapes[0]) {
-      if (!RELAYS[s.relay] || !RELAYS[s.relay].acts.some(function (a) { return a[0] === s['do']; })) throw new Invalid('commande invalide');
+      if (!RELAYS[s.relay] || !RELAYS[s.relay].acts.some(function (a) { return a[0] === s['do']; })) throw new Invalid(t('e_cmd'));
       return { type: 'relay', relay: s.relay, action: s['do'] };
     }
     if (shapes[1]) {
       var w = s.wait, lo, hi, random = false;
       if (typeof w === 'number') { lo = hi = w; }
       else if (w && typeof w === 'object' && typeof w.min === 'number' && typeof w.max === 'number') { lo = w.min; hi = w.max; random = lo !== hi; }
-      else throw new Invalid('une attente est un nombre de secondes ou {min, max}');
-      if (!inRange(lo, 1, LIM.wait) || !inRange(hi, 1, LIM.wait) || lo > hi) throw new Invalid('une attente va de 1 à ' + LIM.wait + ' secondes, avec min ≤ max');
+      else throw new Invalid(t('e_waitform'));
+      if (!inRange(lo, 1, LIM.wait) || !inRange(hi, 1, LIM.wait) || lo > hi) throw new Invalid(t('e_waitrange', { max: LIM.wait }));
       return { type: 'wait', random: random, min: lo, max: hi };
     }
-    if (depth >= LIM.depth) throw new Invalid('groupes imbriqués sur trop de niveaux');
+    if (depth >= LIM.depth) throw new Invalid(t('e_depth'));
     if (shapes[2]) {
-      if (!Array.isArray(s.together)) throw new Invalid('« together » est une liste');
+      if (!Array.isArray(s.together)) throw new Invalid(t('e_together'));
       return { type: 'together', children: s.together.map(function (c) { return fileStep(c, depth + 1, budget); }) };
     }
-    if (!inRange(s.repeat, 1, LIM.repeat) || !Array.isArray(s.steps)) throw new Invalid('une répétition demande un nombre de 1 à ' + LIM.repeat + ' et ses étapes');
+    if (!inRange(s.repeat, 1, LIM.repeat) || !Array.isArray(s.steps)) throw new Invalid(t('e_repeat', { max: LIM.repeat }));
     return { type: 'repeat', count: s.repeat, children: s.steps.map(function (c) { return fileStep(c, depth + 1, budget); }) };
   }
   function parseFile(text) {
-    if (text.length > LIM.file) throw new Invalid('fichier trop gros');
+    if (text.length > LIM.file) throw new Invalid(t('e_toobig'));
     var data;
-    try { data = JSON.parse(text); } catch (e) { throw new Invalid('ce fichier n\'est pas du JSON valide'); }
-    if (!data || data.format !== 'airbox-sequence') throw new Invalid('ce fichier n\'est pas une séquence Airbox');
-    if (!(data.version >= 1 && data.version <= 1)) throw new Invalid('version de format non prise en charge : ' + data.version);
+    try { data = JSON.parse(text); } catch (e) { throw new Invalid(t('e_json')); }
+    if (!data || data.format !== 'airbox-sequence') throw new Invalid(t('e_notseq'));
+    if (!(data.version >= 1 && data.version <= 1)) throw new Invalid(t('e_version', { v: data.version }));
     var items;
     if (Array.isArray(data.sequences)) {
-      if (data.sequences.length > LIM.seqs) throw new Invalid('trop de séquences dans ce fichier');
+      if (data.sequences.length > LIM.seqs) throw new Invalid(t('e_manyseq'));
       items = data.sequences;
     } else if (Array.isArray(data.steps)) items = [data];
-    else throw new Invalid('ce fichier n\'est pas une séquence Airbox');
-    if (!items.length) throw new Invalid('aucune séquence dans ce fichier');
+    else throw new Invalid(t('e_notseq'));
+    if (!items.length) throw new Invalid(t('e_noseq'));
     return items.map(function (it) {
       var budget = { n: LIM.steps };
       var steps = (it.steps || []).map(function (s) { return fileStep(s, 0, budget); });
       var out = {
-        name: (typeof it.name === 'string' && it.name.trim() ? it.name.trim() : 'Séquence importée').slice(0, LIM.name),
+        name: (typeof it.name === 'string' && it.name.trim() ? it.name.trim() : t('imported_name')).slice(0, LIM.name),
         author: typeof it.author === 'string' ? it.author.trim().slice(0, LIM.text) : '',
         description: typeof it.description === 'string' ? it.description.trim().slice(0, LIM.text) : '',
         steps: steps
       };
-      if (analyse(steps).tooLarge) throw new Invalid('cette séquence est trop grande pour être jouée');
+      if (analyse(steps).tooLarge) throw new Invalid(t('e_large'));
       return out;
     });
   }
@@ -455,66 +585,65 @@ dialog .actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;mar
   function waitInputs(n, path) {
     function num(field, v) {
       var bad = !inRange(v, 1, LIM.wait);
-      return '<input class="num' + (bad ? ' bad' : '') + '" type="number" min="1" max="' + LIM.wait + '" inputmode="numeric" data-field="' + field + '" data-path="' + path + '" value="' + (isFinite(v) ? v : '') + '" aria-label="' + (field === 'max' ? 'Maximum en secondes' : field === 'min' ? 'Minimum en secondes' : 'Durée en secondes') + '">';
+      return '<input class="num' + (bad ? ' bad' : '') + '" type="number" min="1" max="' + LIM.wait + '" inputmode="numeric" data-field="' + field + '" data-path="' + path + '" value="' + (isFinite(v) ? v : '') + '" aria-label="' + (field === 'max' ? t('lbl_max') : field === 'min' ? t('lbl_min') : t('lbl_secs')) + '">';
     }
     return n.random
-      ? num('min', n.min) + '<span class="sub">à</span>' + num('max', n.max) + '<span class="sub">s</span>'
+      ? num('min', n.min) + '<span class="sub">' + esc(t('to')) + '</span>' + num('max', n.max) + '<span class="sub">s</span>'
       : num('fixed', n.min) + '<span class="sub">s</span>';
   }
   function menu(path, i, len) {
-    return '<details class="menu"><summary aria-label="Actions sur cette étape">⋯</summary><div class="menu-list">' +
-      '<button type="button" data-act="up" data-path="' + path + '"' + (i === 0 ? ' disabled' : '') + '>Monter</button>' +
-      '<button type="button" data-act="down" data-path="' + path + '"' + (i === len - 1 ? ' disabled' : '') + '>Descendre</button>' +
-      '<button type="button" data-act="dup" data-path="' + path + '">Dupliquer</button>' +
-      '<button type="button" class="danger" data-act="del" data-path="' + path + '">Supprimer</button></div></details>';
+    return '<details class="menu"><summary aria-label="' + esc(t('menu_aria')) + '">⋯</summary><div class="menu-list">' +
+      '<button type="button" data-act="up" data-path="' + path + '"' + (i === 0 ? ' disabled' : '') + '>' + esc(t('m_up')) + '</button>' +
+      '<button type="button" data-act="down" data-path="' + path + '"' + (i === len - 1 ? ' disabled' : '') + '>' + esc(t('m_down')) + '</button>' +
+      '<button type="button" data-act="dup" data-path="' + path + '">' + esc(t('m_dup')) + '</button>' +
+      '<button type="button" class="danger" data-act="del" data-path="' + path + '">' + esc(t('m_del')) + '</button></div></details>';
   }
   function addRow(path, depth) {          // depth = depth of the children of this container
     var full = countSteps(seq.steps) >= LIM.steps, groupsOff = depth >= LIM.depth || full;
-    function b(kind, label, off) { return '<button type="button" class="btn alt sm" data-act="add" data-kind="' + kind + '" data-path="' + path + '"' + (off ? ' disabled' : '') + '>+ ' + label + '</button>'; }
-    return b('relay', 'Commande', full) + b('wait', 'Attente', full) + b('together', 'Ensemble', groupsOff) + b('repeat', 'Répéter', groupsOff);
+    function b(kind, label, off) { return '<button type="button" class="btn alt sm" data-act="add" data-kind="' + kind + '" data-path="' + path + '"' + (off ? ' disabled' : '') + '>' + esc(label) + '</button>'; }
+    return b('relay', t('add_cmd'), full) + b('wait', t('add_wait'), full) + b('together', t('add_together'), groupsOff) + b('repeat', t('add_repeat'), groupsOff);
   }
   function renderList(list, parentPath, depth) {
     return list.map(function (n, i) {
       var path = parentPath === '' ? String(i) : parentPath + '.' + i;
       var m = menu(path, i, list.length), head, nest = '';
       if (n.type === 'relay') {
-        head = '<span class="tag t-relay">Commande</span>' +
-          '<select class="sel" data-field="relay" data-path="' + path + '" aria-label="Relais">' + Object.keys(RELAYS).map(function (k) { return '<option value="' + k + '"' + (k === n.relay ? ' selected' : '') + '>' + RELAYS[k].label + '</option>'; }).join('') + '</select>' +
-          '<select class="sel" data-field="action" data-path="' + path + '" aria-label="Action">' + RELAYS[n.relay].acts.map(function (a) { return '<option value="' + a[0] + '"' + (a[0] === n.action ? ' selected' : '') + '>' + a[1] + '</option>'; }).join('') + '</select>';
+        head = '<span class="tag t-relay">' + esc(t('tag_relay')) + '</span>' +
+          '<select class="sel" data-field="relay" data-path="' + path + '" aria-label="' + esc(t('lbl_relay')) + '">' + Object.keys(RELAYS).map(function (k) { return '<option value="' + k + '"' + (k === n.relay ? ' selected' : '') + '>' + RELAYS[k].label + '</option>'; }).join('') + '</select>' +
+          '<select class="sel" data-field="action" data-path="' + path + '" aria-label="' + esc(t('lbl_action')) + '">' + RELAYS[n.relay].acts.map(function (a) { return '<option value="' + a[0] + '"' + (a[0] === n.action ? ' selected' : '') + '>' + esc(t('act_' + a[0])) + '</option>'; }).join('') + '</select>';
       } else if (n.type === 'wait') {
-        head = '<span class="tag ' + (n.random ? 't-rand' : 't-wait') + '">' + (n.random ? 'Au hasard' : 'Attente') + '</span>' +
-          '<select class="sel" data-field="mode" data-path="' + path + '" aria-label="Type d\'attente"><option value="fixed"' + (n.random ? '' : ' selected') + '>fixe</option><option value="random"' + (n.random ? ' selected' : '') + '>au hasard</option></select>' +
+        head = '<span class="tag ' + (n.random ? 't-rand' : 't-wait') + '">' + esc(n.random ? t('tag_rand') : t('tag_wait')) + '</span>' +
+          '<select class="sel" data-field="mode" data-path="' + path + '" aria-label="' + esc(t('lbl_waittype')) + '"><option value="fixed"' + (n.random ? '' : ' selected') + '>' + esc(t('mode_fixed')) + '</option><option value="random"' + (n.random ? ' selected' : '') + '>' + esc(t('mode_random')) + '</option></select>' +
           waitInputs(n, path);
       } else if (n.type === 'repeat') {
         var badc = !inRange(n.count, 1, LIM.repeat);
-        head = '<span class="tag t-group">Répéter</span><input class="num' + (badc ? ' bad' : '') + '" type="number" min="1" max="' + LIM.repeat + '" inputmode="numeric" data-field="count" data-path="' + path + '" value="' + (isFinite(n.count) ? n.count : '') + '" aria-label="Nombre de répétitions"><span class="sub">fois</span>';
+        head = '<span class="tag t-group">' + esc(t('tag_repeat')) + '</span><input class="num' + (badc ? ' bad' : '') + '" type="number" min="1" max="' + LIM.repeat + '" inputmode="numeric" data-field="count" data-path="' + path + '" value="' + (isFinite(n.count) ? n.count : '') + '" aria-label="' + esc(t('lbl_count')) + '"><span class="sub">' + esc(t('times')) + '</span>';
         nest = '<div class="nest">' + renderList(n.children, path, depth + 1) + '<div class="add">' + addRow(path, depth + 1) + '</div></div>';
       } else {
-        head = '<span class="tag t-group">Ensemble</span><span class="sub">les étapes démarrent en même temps</span>';
+        head = '<span class="tag t-group">' + esc(t('tag_together')) + '</span><span class="sub">' + esc(t('together_hint')) + '</span>';
         nest = '<div class="nest">' + renderList(n.children, path, depth + 1) + '<div class="add">' + addRow(path, depth + 1) + '</div></div>';
       }
       return '<div class="step"><div class="line">' + head + m + '</div>' + nest + '</div>';
     }).join('');
   }
   function render() {
-    $('steps').innerHTML = seq.steps.length ? renderList(seq.steps, '', 1) : '<div class="empty">Aucune étape. Ajoutez une commande, une attente ou un groupe.</div>';
+    $('steps').innerHTML = seq.steps.length ? renderList(seq.steps, '', 1) : '<div class="empty">' + esc(t('empty_steps')) + '</div>';
     $('root-add').innerHTML = addRow('', 1);
     updateSide();
   }
   function updateSide() {
     var a = analyse(seq.steps), probs = problems();
-    $('a-duration').textContent = a.min === a.max ? fmt(a.max) : fmt(a.min) + ' à ' + fmt(a.max);
-    $('a-meta').textContent = a.actions + (a.actions > 1 ? ' actions' : ' action') + (a.relays.length ? ' · ' + a.relays.map(function (r) { return RELAYS[r].label; }).join(', ') : '');
+    $('a-duration').textContent = a.min === a.max ? fmt(a.max) : fmt(a.min) + ' ' + t('to') + ' ' + fmt(a.max);
+    $('a-meta').textContent = a.actions + ' ' + t(a.actions > 1 ? 'action_many' : 'action_one') + (a.relays.length ? ' · ' + a.relays.map(function (r) { return RELAYS[r].label; }).join(', ') : '');
     var html = '';
     if (probs.length) {
       html = '<div class="status bad"><div class="stack">' + probs.map(function (p) { return '<div>' + esc(p) + '</div>'; }).join('') + '</div></div>';
     } else if (a.warnings.length) {
       html = '<div class="status warn"><div class="stack">' + a.warnings.map(function (w) {
-        var verb = w.relay === 'rebreath' ? 'reste ouvert' : 'reste fermé';
-        return '<div>' + RELAYS[w.relay].label + ' ' + verb + ' ' + w.seconds + ' s<span> Le firmware coupe à ' + w.cap + ' s : la séquence continue, mais le relais revient à l\'état sûr avant la fin de cette étape.</span></div>';
+        return '<div>' + esc(t(w.relay === 'rebreath' ? 'warn_open' : 'warn_closed', { r: RELAYS[w.relay].label, s: w.seconds })) + '<span>' + esc(t('warn_detail', { cap: w.cap })) + '</span></div>';
       }).join('') + '</div></div>';
     } else {
-      html = '<div class="status ok">Dans les plafonds</div>';
+      html = '<div class="status ok">' + esc(t('ok_caps')) + '</div>';
     }
     $('a-status').innerHTML = html;
     $('b-propose').disabled = probs.length > 0;
@@ -577,8 +706,8 @@ dialog .actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;mar
   }
   function confirmReplace(then) {
     if (!seq.steps.length) { then(); return; }
-    openDialog('<h3>Remplacer la séquence en cours ?</h3><div class="body"><p>La séquence « ' + esc(seq.name || 'sans nom') + ' » sera remplacée. Pensez à l\'exporter d\'abord si vous voulez la garder.</p>' +
-      '<div class="actions"><button class="btn alt" data-close type="button">Annuler</button><button class="btn" id="d-ok" type="button">Remplacer</button></div></div>',
+    openDialog('<h3>' + esc(t('replace_title')) + '</h3><div class="body"><p>' + esc(t('replace_body', { name: seq.name || t('unnamed') })) + '</p>' +
+      '<div class="actions"><button class="btn alt" data-close type="button">' + esc(t('cancel')) + '</button><button class="btn" id="d-ok" type="button">' + esc(t('replace')) + '</button></div></div>',
       function () { $('d-ok').addEventListener('click', function () { dlg.close(); then(); }); });
   }
   function setSequence(s) {
@@ -587,11 +716,11 @@ dialog .actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;mar
     render();
   }
   function openParsed(list, label) {
-    function use(s) { confirmReplace(function () { setSequence(s); location.hash = '#editeur'; toast('« ' + s.name + ' » ouverte dans l\'éditeur.'); }); }
+    function use(s) { confirmReplace(function () { setSequence(s); location.hash = '#editeur'; toast(t('opened_toast', { name: s.name })); }); }
     if (list.length === 1) { use(list[0]); return; }
-    openDialog('<h3>Choisissez une séquence</h3><div class="body"><p class="sub">' + esc(label) + ' contient ' + list.length + ' séquences.</p><div class="choice">' +
+    openDialog('<h3>' + esc(t('choose_title')) + '</h3><div class="body"><p class="sub">' + esc(t('choose_body', { file: label, n: list.length })) + '</p><div class="choice">' +
       list.map(function (s, i) { return '<button type="button" data-i="' + i + '">' + esc(s.name) + '</button>'; }).join('') +
-      '</div><div class="actions"><button class="btn alt" data-close type="button">Annuler</button></div></div>',
+      '</div><div class="actions"><button class="btn alt" data-close type="button">' + esc(t('cancel')) + '</button></div></div>',
       function (d) { d.querySelectorAll('[data-i]').forEach(function (b) { b.addEventListener('click', function () { d.close(); use(list[+b.getAttribute('data-i')]); }); }); });
   }
 
@@ -604,23 +733,23 @@ dialog .actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;mar
     a.href = url; a.download = (slug(seq.name) || 'sequence') + '.airbox.json';
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
-    toast('Fichier exporté.');
+    toast(t('exported'));
   }
   function onFile(e) {
     var f = e.target.files[0]; e.target.value = '';
     if (!f) return;
-    if (f.size > LIM.file) { toast('Fichier trop gros.'); return; }
+    if (f.size > LIM.file) { toast(t('toast_big')); return; }
     var r = new FileReader();
     r.onload = function () {
       try { openParsed(parseFile(String(r.result)), f.name); }
-      catch (err) { toast(err instanceof Invalid ? 'Import impossible : ' + err.message + '.' : 'Import impossible.'); }
+      catch (err) { toast(err instanceof Invalid ? t('import_fail', { m: err.message }) : t('import_fail0')); }
     };
     r.readAsText(f);
   }
 
   // ---- propose ----
   function newFileUrl(file, name) {
-    var base = 'https://github.com/' + REPO + '/new/main/sequences?filename=' + encodeURIComponent(file) + '&message=' + encodeURIComponent('Ajouter ' + name) + '&value=';
+    var base = 'https://github.com/' + REPO + '/new/main/sequences?filename=' + encodeURIComponent(file) + '&message=' + encodeURIComponent('Add ' + name) + '&value=';
     var pretty = base + encodeURIComponent(JSON.stringify(toFile(), null, 2) + '\n');
     if (pretty.length <= 7500) return pretty;
     var compact = base + encodeURIComponent(JSON.stringify(toFile()) + '\n');
@@ -629,24 +758,24 @@ dialog .actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;mar
   function onPropose() {
     if (problems().length) return;
     var initial = slug(seq.name);
-    openDialog('<h3>Proposer « ' + esc(seq.name.trim()) + ' »</h3><div class="body">' +
-      '<ol><li>Vérifiez le nom et l\'auteur : ils seront publiés tels quels.</li><li>GitHub s\'ouvre sur un nouveau fichier déjà rempli. Connectez-vous si besoin.</li><li>Cliquez « Propose new file », puis « Create pull request ».</li></ol>' +
-      '<div class="field"><label for="d-file">Nom du fichier</label><div style="display:flex;gap:6px;align-items:center"><input class="input" id="d-file" value="' + esc(initial) + '" autocomplete="off" spellcheck="false"><span class="mono">.airbox.json</span></div><span class="err" id="d-err"></span></div>' +
-      '<p class="sub">Une vérification automatique contrôle le fichier, et un mainteneur relit chaque proposition avant fusion.' + (seq.author.trim() ? '' : ' Pensez à renseigner l\'auteur si vous voulez être crédité.') + '</p>' +
-      '<div class="actions"><button class="btn alt" data-close type="button">Annuler</button><button class="btn" id="d-go" type="button">Ouvrir GitHub ↗</button></div></div>',
+    openDialog('<h3>' + esc(t('prop_title', { name: seq.name.trim() })) + '</h3><div class="body">' +
+      '<ol><li>' + esc(t('prop_1')) + '</li><li>' + esc(t('prop_2')) + '</li><li>' + esc(t('prop_3')) + '</li></ol>' +
+      '<div class="field"><label for="d-file">' + esc(t('prop_file')) + '</label><div style="display:flex;gap:6px;align-items:center"><input class="input" id="d-file" value="' + esc(initial) + '" autocomplete="off" spellcheck="false"><span class="mono">.airbox.json</span></div><span class="err" id="d-err"></span></div>' +
+      '<p class="sub">' + esc(t('prop_note') + (seq.author.trim() ? '' : t('prop_author'))) + '</p>' +
+      '<div class="actions"><button class="btn alt" data-close type="button">' + esc(t('cancel')) + '</button><button class="btn" id="d-go" type="button">' + esc(t('prop_open')) + '</button></div></div>',
       function () {
         var input = $('d-file'), err = $('d-err'), go = $('d-go');
         function check() {
           var v = input.value.trim(), msg = '';
-          if (!NAME_RE.test(v)) msg = 'Lettres minuscules, chiffres et tirets seulement.';
-          else if (catalogIndex && catalogIndex.sequences.some(function (s) { return s.id === v; })) msg = 'Ce nom existe déjà dans le catalogue : choisissez-en un autre.';
+          if (!NAME_RE.test(v)) msg = t('prop_err_name');
+          else if (catalogIndex && catalogIndex.sequences.some(function (s) { return s.id === v; })) msg = t('prop_err_exists');
           err.textContent = msg; go.disabled = !!msg;
         }
         input.addEventListener('input', check); check();
         if (!catalogIndex) loadCatalog().then(check);
         go.addEventListener('click', function () {
           var url = newFileUrl(input.value.trim() + '.airbox.json', seq.name.trim());
-          if (!url) { err.textContent = 'La séquence est trop longue pour un lien. Exportez le fichier, puis ajoutez-le à la main sur GitHub.'; return; }
+          if (!url) { err.textContent = t('prop_err_long'); return; }
           window.open(url, '_blank', 'noopener');
           dlg.close();
         });
@@ -668,25 +797,25 @@ dialog .actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;mar
   }
   function renderCatalog() {
     var el = $('catalog');
-    if (catalogLoading) { el.innerHTML = '<p class="muted">Chargement du catalogue…</p>'; return; }
-    if (catalogError) { el.innerHTML = '<div class="status bad">Le catalogue n\'a pas pu être chargé (' + esc(catalogError) + ').</div><p style="margin-top:12px"><button class="btn alt" id="c-retry" type="button">Réessayer</button></p>'; $('c-retry').addEventListener('click', loadCatalog); return; }
+    if (catalogLoading) { el.innerHTML = '<p class="muted">' + esc(t('cat_loading')) + '</p>'; return; }
+    if (catalogError) { el.innerHTML = '<div class="status bad">' + esc(t('cat_error', { m: catalogError })) + '</div><p style="margin-top:12px"><button class="btn alt" id="c-retry" type="button">' + esc(t('retry')) + '</button></p>'; $('c-retry').addEventListener('click', loadCatalog); return; }
     if (!catalogIndex) { el.innerHTML = ''; return; }
-    if (!catalogIndex.sequences.length) { el.innerHTML = '<div class="empty">Le catalogue est vide pour l\'instant. Soyez le premier à proposer une séquence.</div>'; return; }
-    el.innerHTML = '<div class="panel tablewrap"><table><thead><tr><th>Séquence</th><th>Auteur</th><th>Durée</th><th>Relais</th><th></th></tr></thead><tbody>' +
+    if (!catalogIndex.sequences.length) { el.innerHTML = '<div class="empty">' + esc(t('cat_empty')) + '</div>'; return; }
+    el.innerHTML = '<div class="panel tablewrap"><table><thead><tr><th>' + esc(t('th_seq')) + '</th><th>' + esc(t('th_author')) + '</th><th>' + esc(t('th_duration')) + '</th><th>' + esc(t('th_relays')) + '</th><th></th></tr></thead><tbody>' +
       catalogIndex.sequences.map(function (s, i) {
         return '<tr><td><b>' + esc(s.name) + '</b>' + (s.description ? '<span class="desc">' + esc(s.description) + '</span>' : '') + '</td><td>' + esc(s.author || '') + '</td><td>' +
-          (typeof s.durationSeconds === 'number' ? 'jusqu\'à ' + fmt(s.durationSeconds) : '') + '</td><td>' +
-          esc((s.relays || []).map(function (r) { return RELAYS[r] ? RELAYS[r].label : r; }).join(', ')) + '</td><td class="act"><button class="btn alt sm" type="button" data-open="' + i + '">Ouvrir dans l\'éditeur</button></td></tr>';
+          (typeof s.durationSeconds === 'number' ? t('up_to', { d: fmt(s.durationSeconds) }) : '') + '</td><td>' +
+          esc((s.relays || []).map(function (r) { return RELAYS[r] ? RELAYS[r].label : r; }).join(', ')) + '</td><td class="act"><button class="btn alt sm" type="button" data-open="' + i + '">' + esc(t('open_editor')) + '</button></td></tr>';
       }).join('') + '</tbody></table></div>';
     el.querySelectorAll('[data-open]').forEach(function (b) {
       b.addEventListener('click', function () {
         var s = catalogIndex.sequences[+b.getAttribute('data-open')];
-        if (!s || typeof s.path !== 'string' || !/^sequences\/[a-z0-9-]+\.airbox\.json$/.test(s.path)) { toast('Entrée de catalogue invalide.'); return; }
+        if (!s || typeof s.path !== 'string' || !/^sequences\/[a-z0-9-]+\.airbox\.json$/.test(s.path)) { toast(t('cat_invalid')); return; }
         b.disabled = true;
         fetch(RAW + s.path, { cache: 'no-cache' })
           .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
           .then(function (t) { openParsed(parseFile(t), s.name); })
-          .catch(function (err) { toast('Impossible d\'ouvrir cette séquence' + (err instanceof Invalid ? ' : ' + err.message : '') + '.'); })
+          .catch(function (err) { toast(err instanceof Invalid ? t('open_fail_m', { m: err.message }) : t('open_fail')); })
           .then(function () { b.disabled = false; });
       });
     });
@@ -701,7 +830,7 @@ dialog .actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;mar
       if (a.getAttribute('data-nav') === h) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
     });
     if (h === 'catalogue') loadCatalog();
-    document.title = (h === 'editeur' ? 'Éditeur' : h === 'catalogue' ? 'Catalogue' : 'Format') + ' · Séquences Airbox';
+    document.title = t(h === 'editeur' ? 'page_editor' : h === 'catalogue' ? 'page_catalog' : 'page_format') + ' · ' + t('brand');
   }
 
   // ---- init ----
@@ -731,9 +860,30 @@ dialog .actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;mar
   $('b-new').addEventListener('click', function () {
     confirmReplace(function () { setSequence({ name: '', author: '', description: '', steps: [] }); $('f-name').focus(); });
   });
+  function applyLang() {
+    document.documentElement.lang = lang;
+    var d = document.querySelector('meta[name="description"]'); if (d) d.setAttribute('content', t('doc_desc'));
+    document.querySelectorAll('[data-i18n]').forEach(function (el) { el.textContent = t(el.getAttribute('data-i18n')); });
+    document.querySelectorAll('[data-i18n-html]').forEach(function (el) { el.innerHTML = t(el.getAttribute('data-i18n-html')); });
+    document.querySelectorAll('#lang-group [data-lang]').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-lang') === lang ? 'true' : 'false'); });
+    $('lang-group').setAttribute('aria-label', t('lang_label'));
+    render(); renderCatalog(); route();
+  }
+  function setLang(next) {
+    if (next === lang) return;
+    var prev = lang;
+    // An untouched default example follows the language.
+    if (seq.name === T[prev].default_name) seq.name = T[next].default_name;
+    if (seq.description === T[prev].default_desc) seq.description = T[next].default_desc;
+    lang = next;
+    try { localStorage.setItem('airbox-seq-lang', lang); } catch (e) { /* private mode */ }
+    $('f-name').value = seq.name; $('f-desc').value = seq.description;
+    applyLang();
+  }
+  document.querySelectorAll('#lang-group [data-lang]').forEach(function (b) { b.addEventListener('click', function () { setLang(b.getAttribute('data-lang')); }); });
   window.addEventListener('hashchange', route);
-  render(); route();
-  window.__airbox = { analyse: analyse, parseFile: parseFile, toFile: toFile, setSequence: setSequence, problems: problems, newFileUrl: newFileUrl };
+  applyLang();
+  window.__airbox = { setLang: setLang, t: t, analyse: analyse, parseFile: parseFile, toFile: toFile, setSequence: setSequence, problems: problems, newFileUrl: newFileUrl };
 })();
 </script>
 </body>
