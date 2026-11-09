@@ -1,0 +1,41 @@
+{
+  "format": "airbox-index",
+  "version": 1,
+  "name": "Airbox community sequences",
+  "sequences": [
+    {
+      "id": "aroma-diffusion",
+      "name": "Aroma diffusion",
+      "author": "rubtatex",
+      "description": "Five short aroma pulses, 30 s apart.",
+      "path": "sequences/aroma-diffusion.airbox.json",
+      "durationSeconds": 190,
+      "relays": [
+        "aroma"
+      ]
+    },
+    {
+      "id": "re-breath-cycle",
+      "name": "Re-Breath cycle",
+      "author": "rubtatex",
+      "description": "Three cycles: Re-Breath and Aroma together for 20 s, then 10 s of rest.",
+      "path": "sequences/re-breath-cycle.airbox.json",
+      "durationSeconds": 90,
+      "relays": [
+        "rebreath",
+        "aroma"
+      ]
+    },
+    {
+      "id": "square-breathing",
+      "name": "Square breathing",
+      "author": "rubtatex",
+      "description": "Six rounds of Re-Breath: open, hold, close, then a random pause of 3 to 6 s.",
+      "path": "sequences/square-breathing.airbox.json",
+      "durationSeconds": 60,
+      "relays": [
+        "rebreath"
+      ]
+    }
+  ]
+}

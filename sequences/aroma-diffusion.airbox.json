@@ -1,0 +1,28 @@
+{
+  "format": "airbox-sequence",
+  "version": 1,
+  "name": "Aroma diffusion",
+  "author": "rubtatex",
+  "description": "Five short aroma pulses, 30 s apart.",
+  "steps": [
+    {
+      "repeat": 5,
+      "steps": [
+        {
+          "relay": "aroma",
+          "do": "start"
+        },
+        {
+          "wait": 8
+        },
+        {
+          "relay": "aroma",
+          "do": "stop"
+        },
+        {
+          "wait": 30
+        }
+      ]
+    }
+  ]
+}

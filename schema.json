@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Airbox sequence file",
+  "type": "object",
+  "required": ["format", "version", "name", "steps"],
+  "additionalProperties": false,
+  "properties": {
+    "format": { "const": "airbox-sequence" },
+    "version": { "const": 1 },
+    "name": { "type": "string", "minLength": 1, "maxLength": 80 },
+    "author": { "type": "string", "maxLength": 500 },
+    "description": { "type": "string", "maxLength": 500 },
+    "steps": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/step" } }
+  },
+  "$defs": {
+    "seconds": { "type": "integer", "minimum": 1, "maximum": 3600 },
+    "step": {
+      "oneOf": [
+        {
+          "type": "object", "additionalProperties": false, "required": ["relay", "do"],
+          "properties": {
+            "relay": { "enum": ["air", "rebreath", "aroma"] },
+            "do": { "enum": ["open", "close", "start", "stop"] }
+          },
+          "allOf": [
+            { "if": { "properties": { "relay": { "const": "air" } } }, "then": { "properties": { "do": { "enum": ["open", "close"] } } } },
+            { "if": { "properties": { "relay": { "const": "rebreath" } } }, "then": { "properties": { "do": { "enum": ["open", "close"] } } } },
+            { "if": { "properties": { "relay": { "const": "aroma" } } }, "then": { "properties": { "do": { "enum": ["start", "stop"] } } } }
+          ]
+        },
+        {
+          "type": "object", "additionalProperties": false, "required": ["wait"],
+          "properties": {
+            "wait": {
+              "oneOf": [
+                { "$ref": "#/$defs/seconds" },
+                {
+                  "type": "object", "additionalProperties": false, "required": ["min", "max"],
+                  "properties": { "min": { "$ref": "#/$defs/seconds" }, "max": { "$ref": "#/$defs/seconds" } }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "type": "object", "additionalProperties": false, "required": ["together"],
+          "properties": { "together": { "type": "array", "items": { "$ref": "#/$defs/step" } } }
+        },
+        {
+          "type": "object", "additionalProperties": false, "required": ["repeat", "steps"],
+          "properties": {
+            "repeat": { "type": "integer", "minimum": 1, "maximum": 100 },
+            "steps": { "type": "array", "items": { "$ref": "#/$defs/step" } }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "format": "airbox-sequence",
+  "version": 1,
+  "name": "Re-Breath cycle",
+  "author": "rubtatex",
+  "description": "Three cycles: Re-Breath and Aroma together for 20 s, then 10 s of rest.",
+  "steps": [
+    {
+      "repeat": 3,
+      "steps": [
+        {
+          "together": [
+            {
+              "relay": "rebreath",
+              "do": "open"
+            },
+            {
+              "relay": "aroma",
+              "do": "start"
+            }
+          ]
+        },
+        {
+          "wait": 20
+        },
+        {
+          "together": [
+            {
+              "relay": "rebreath",
+              "do": "close"
+            },
+            {
+              "relay": "aroma",
+              "do": "stop"
+            }
+          ]
+        },
+        {
+          "wait": 10
+        }
+      ]
+    }
+  ]
+}

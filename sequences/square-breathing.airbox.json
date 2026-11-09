@@ -1,0 +1,31 @@
+{
+  "format": "airbox-sequence",
+  "version": 1,
+  "name": "Square breathing",
+  "author": "rubtatex",
+  "description": "Six rounds of Re-Breath: open, hold, close, then a random pause of 3 to 6 s.",
+  "steps": [
+    {
+      "repeat": 6,
+      "steps": [
+        {
+          "relay": "rebreath",
+          "do": "open"
+        },
+        {
+          "wait": 4
+        },
+        {
+          "relay": "rebreath",
+          "do": "close"
+        },
+        {
+          "wait": {
+            "min": 3,
+            "max": 6
+          }
+        }
+      ]
+    }
+  ]
+}
