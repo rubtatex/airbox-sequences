@@ -1,6 +1,8 @@
 # Airbox community sequences
 
-Sequences shared by Airbox users, for the [Airbox iOS app](https://github.com/rubtatex/Airbox-APP-ios).
+Sequences shared by Airbox users, for the Airbox app.
+
+**Online editor and catalog: https://rubtatex.github.io/airbox-sequences/**
 
 In the app: **Sequences tab → ⋯ → Browse the community**, tick the sequences you want, then **Import**. You get a preview with the steps and any safety warning before anything is added.
 
@@ -10,12 +12,15 @@ Open the file on GitHub, copy its address, and in the app choose **⋯ → Impor
 
 ## Contribute
 
-1. Fork this repository and add `sequences/your-title.airbox.json` (lowercase letters, digits and dashes).
-2. Fill in `name`, `author` and a one-line `description`. The format is documented in [SEQUENCES.md](https://github.com/rubtatex/Airbox-APP-ios/blob/main/SEQUENCES.md), and [`schema.json`](schema.json) describes it for editors.
-3. Run `python3 scripts/build_index.py`. It validates your file with the same limits as the app and updates `index.json`. Commit both.
-4. Open a pull request. A workflow checks the files and the index.
+The easiest way: build your sequence in the [online editor](https://rubtatex.github.io/airbox-sequences/) and click **Propose to the community**. GitHub opens with your file already filled in; click *Propose new file*, then *Create pull request*.
 
-The easiest way to write a sequence is to build it in the app, then use **Share** and add your file here.
+By hand:
+
+1. Fork this repository and add `sequences/your-title.airbox.json` (lowercase letters, digits and dashes).
+2. Fill in `name`, `author` and a one-line `description`. The format is in [FORMAT.md](FORMAT.md), and [`schema.json`](schema.json) describes it for editors.
+3. Open a pull request. A workflow checks your file with the same limits as the app. After the merge, `index.json` is rebuilt automatically.
+
+You can also run `python3 scripts/build_index.py` to check a file on your computer.
 
 ### Rules
 

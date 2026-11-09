@@ -1,0 +1,740 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Séquences Airbox</title>
+<meta name="description" content="Créez, modifiez et partagez des séquences pour l'Airbox.">
+<link rel="icon" type="image/png" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
+<style>
+/* A plain website that keeps the identity of the Airbox app: its icon, blue accent, status colors and tone. */
+:root{
+  --bg:#f7f8fa; --panel:#ffffff; --fg:#14181f; --muted:#5f6b7a; --line:#dde2e9; --accent:#0a6cf0; --accent-fg:#ffffff;
+  --green:#1f9d55; --orange:#c76a00; --red:#d92d20; --teal:#0e8fa3; --purple:#7a4fd6; --code:#eef1f5;
+  --warnbg:#fff4e5; --okbg:#e8f6ee; --badbg:#fdecea;
+  --font-ui:system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; --font-mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0e1116; --panel:#161b22; --fg:#e8ecf1; --muted:#9aa5b3; --line:#2b333d; --accent:#4d9bff; --accent-fg:#06121f;
+  --green:#4cc38a; --orange:#f0a24b; --red:#ff7b72; --teal:#4cc2d6; --purple:#a98bff; --code:#1f262f;
+  --warnbg:#2a2113; --okbg:#122419; --badbg:#2d1715;}}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 var(--font-ui);
+  padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+a{color:var(--accent)}
+code{font-family:var(--font-mono);font-size:.85em;background:var(--code);padding:1px 6px;border-radius:4px}
+.mono{font-family:var(--font-mono);font-size:.88rem}
+.muted{color:var(--muted)}.sub{color:var(--muted);font-size:.86rem}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* header */
+.site{background:var(--panel);border-bottom:1px solid var(--line)}
+.site-in{max-width:1000px;margin:0 auto;padding:0 16px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;padding:10px 0;font-weight:700;color:var(--fg);text-decoration:none}
+.brand img{width:30px;height:30px;border-radius:7px;display:block}
+.nav{display:flex;gap:2px}
+.nav a{padding:16px 12px;font-size:.92rem;color:var(--muted);text-decoration:none;border-bottom:2px solid transparent}
+.nav a:hover{color:var(--fg)}
+.nav a[aria-current="page"]{color:var(--fg);font-weight:600;border-bottom-color:var(--accent)}
+.site .ext{margin-left:auto;font-size:.88rem;color:var(--muted);text-decoration:none}
+.site .ext:hover{color:var(--fg)}
+main{max-width:1000px;margin:0 auto;padding:22px 16px 56px}
+h1{font-size:1.4rem;margin:0 0 4px}
+h2{font-size:1.05rem;margin:22px 0 8px}
+.view[hidden]{display:none}
+
+/* buttons and controls */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-size:.9rem;font-weight:500;background:var(--accent);color:var(--accent-fg);border:1px solid var(--accent);border-radius:6px;padding:7px 14px;cursor:pointer;text-decoration:none;white-space:nowrap}
+.btn:hover{filter:brightness(1.08)}
+.btn.alt{background:var(--panel);color:var(--fg);border-color:var(--line)}
+.btn.alt:hover{background:var(--code);filter:none}
+.btn.sm{padding:4px 10px;font-size:.84rem}
+.btn[disabled]{opacity:.45;cursor:not-allowed;filter:none}
+.input,select.input,textarea.input{border:1px solid var(--line);border-radius:6px;padding:6px 10px;background:var(--bg);font-size:.95rem;min-width:0;width:100%}
+.input.bad,.num.bad{border-color:var(--red);background:var(--badbg)}
+select.sel,input.num{border:1px solid var(--line);border-radius:6px;background:var(--panel);padding:4px 8px;font-size:.9rem}
+input.num{font-family:var(--font-mono);width:76px;text-align:right}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;min-width:0}
+.pad{padding:14px 16px}
+
+/* editor */
+.editor{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:20px;align-items:start;margin-top:16px}
+@media(max-width:760px){.editor{grid-template-columns:1fr}}
+.col{display:flex;flex-direction:column;gap:14px;min-width:0}
+.form{display:grid;grid-template-columns:90px minmax(0,1fr);gap:10px 12px;align-items:center;padding:14px 16px}
+.form label{font-size:.86rem;color:var(--muted)}
+@media(max-width:480px){.form{grid-template-columns:1fr}}
+.steps{display:flex;flex-direction:column;gap:8px}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-width:0}
+.line{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0}
+.tag{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;border-radius:4px;padding:2px 7px;min-width:82px;text-align:center}
+.t-relay{background:rgba(199,106,0,.14);color:var(--orange)}
+.t-wait{background:var(--code);color:var(--muted)}
+.t-rand{background:rgba(14,143,163,.14);color:var(--teal)}
+.t-group{background:rgba(122,79,214,.14);color:var(--purple)}
+.nest{margin:8px 0 2px 10px;padding-left:12px;border-left:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.add{display:flex;gap:8px;flex-wrap:wrap}
+.empty{border:1px dashed var(--line);border-radius:8px;padding:18px;text-align:center;color:var(--muted)}
+.menu{margin-left:auto;position:relative}
+.menu summary{list-style:none;cursor:pointer;color:var(--muted);width:28px;height:28px;display:grid;place-items:center;border-radius:5px;font-weight:700;user-select:none}
+.menu summary::-webkit-details-marker{display:none}
+.menu summary:hover,.menu[open] summary{background:var(--code);color:var(--fg)}
+.menu-list{position:absolute;right:0;top:30px;z-index:5;min-width:150px;background:var(--panel);border:1px solid var(--line);border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.18);padding:4px;display:flex;flex-direction:column}
+.menu-list button{background:none;border:0;text-align:left;padding:6px 10px;border-radius:5px;cursor:pointer;font-size:.9rem}
+.menu-list button:hover:not([disabled]){background:var(--code)}
+.menu-list button[disabled]{opacity:.4;cursor:default}
+.menu-list .danger{color:var(--red)}
+
+/* side */
+.side{display:flex;flex-direction:column;gap:12px;position:sticky;top:12px}
+.side .btn{width:100%}
+.big{font-size:1.3rem;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.3}
+.status{border-radius:6px;padding:7px 10px;font-size:.86rem;font-weight:600}
+.status.ok{background:var(--okbg);color:var(--green)}
+.status.warn{background:var(--warnbg);color:var(--orange)}
+.status.bad{background:var(--badbg);color:var(--red)}
+.status span,.status li{font-weight:400;color:var(--muted)}
+.status ul{margin:4px 0 0;padding-left:1.1rem}
+.status .stack{display:flex;flex-direction:column;gap:6px}
+.caps{display:grid;grid-template-columns:1fr auto;gap:6px 8px;align-items:center;font-size:.86rem}
+.saved{font-size:.8rem;color:var(--muted)}
+
+/* catalog */
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:.92rem}
+th{text-align:left;font-weight:600;font-size:.8rem;color:var(--muted);padding:9px 14px;border-bottom:1px solid var(--line)}
+td{padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+td.act{text-align:right}
+.desc{display:block;color:var(--muted);font-size:.84rem}
+
+/* format view */
+.prose{max-width:72ch}
+.prose p,.prose ul{margin:0 0 10px}
+.prose ul{padding-left:1.2rem}
+.prose table{min-width:0;margin:0 0 12px}
+.prose th,.prose td{padding:7px 10px}
+.prose .panel{overflow-x:auto}
+
+/* dialog */
+dialog{border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--fg);padding:20px;width:min(480px,calc(100vw - 32px))}
+dialog::backdrop{background:rgba(10,14,20,.5)}
+dialog h3{margin:0 0 10px;font-size:1.1rem}
+dialog .body{display:flex;flex-direction:column;gap:12px}
+dialog ol{margin:0;padding-left:1.2rem;display:flex;flex-direction:column;gap:4px;font-size:.92rem}
+dialog .actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:6px}
+.pre{font-family:var(--font-mono);font-size:.76rem;background:var(--code);border-radius:6px;padding:9px 12px;color:var(--muted);overflow-x:auto;white-space:pre}
+.choice{display:flex;flex-direction:column;gap:6px;max-height:50vh;overflow:auto}
+.choice button{text-align:left;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 12px;cursor:pointer}
+.choice button:hover{background:var(--code)}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:.86rem;color:var(--muted)}
+.err{color:var(--red);font-size:.84rem}
+
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);border-radius:8px;padding:9px 16px;font-size:.9rem;max-width:calc(100vw - 32px);z-index:20}
+#toast[hidden]{display:none}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style>
+</head>
+<body>
+<header class="site">
+  <div class="site-in">
+    <a class="brand" href="#editeur"><img src="icon.png" alt="" width="30" height="30">Séquences Airbox</a>
+    <nav class="nav" aria-label="Pages">
+      <a href="#editeur" data-nav="editeur">Éditeur</a>
+      <a href="#catalogue" data-nav="catalogue">Catalogue</a>
+      <a href="#format" data-nav="format">Format</a>
+    </nav>
+    <a class="ext" href="https://github.com/rubtatex/airbox-sequences" target="_blank" rel="noopener">GitHub ↗</a>
+  </div>
+</header>
+
+<main>
+  <!-- Editor -->
+  <section class="view" id="view-editeur" aria-labelledby="t-editeur">
+    <h1 id="t-editeur">Éditeur de séquences</h1>
+    <p class="muted" style="margin:0;max-width:70ch">Une séquence pilote les trois relais de l'Airbox : Air, Re-Breath et Aroma. Construisez-la ici, vérifiez sa durée et ses plafonds, puis exportez le fichier ou proposez-le à la communauté.</p>
+    <div class="editor">
+      <div class="col">
+        <div class="panel form">
+          <label for="f-name">Nom</label><input class="input" id="f-name" maxlength="80" autocomplete="off">
+          <label for="f-author">Auteur</label><input class="input" id="f-author" maxlength="500" autocomplete="off">
+          <label for="f-desc">Description</label><input class="input" id="f-desc" maxlength="500" autocomplete="off">
+        </div>
+        <div class="steps" id="steps"></div>
+        <div class="add" id="root-add"></div>
+      </div>
+      <aside class="side" aria-label="Analyse et actions">
+        <div class="panel pad" style="display:flex;flex-direction:column;gap:10px">
+          <div><span class="sub">Durée</span><div class="big" id="a-duration">0 s</div></div>
+          <div class="sub" id="a-meta"></div>
+          <div id="a-status"></div>
+          <div class="caps">
+            <label for="cap-rebreath">Plafond Re-Breath (s)</label><input class="num" id="cap-rebreath" type="number" min="5" max="300" inputmode="numeric">
+            <label for="cap-air">Plafond Air (s)</label><input class="num" id="cap-air" type="number" min="5" max="300" inputmode="numeric">
+          </div>
+        </div>
+        <button class="btn" id="b-propose" type="button">Proposer à la communauté</button>
+        <button class="btn alt" id="b-export" type="button">Exporter le fichier</button>
+        <button class="btn alt" id="b-import" type="button">Importer un fichier</button>
+        <button class="btn alt" id="b-new" type="button">Nouvelle séquence</button>
+        <input id="file" type="file" accept=".json,application/json" hidden>
+        <span class="saved">Brouillon enregistré dans ce navigateur</span>
+      </aside>
+    </div>
+  </section>
+
+  <!-- Catalog -->
+  <section class="view" id="view-catalogue" aria-labelledby="t-catalogue" hidden>
+    <h1 id="t-catalogue">Catalogue</h1>
+    <p class="muted" style="margin:0 0 16px">Les séquences partagées par la communauté. « Ouvrir dans l'éditeur » les charge pour les modifier.</p>
+    <div id="catalog"></div>
+  </section>
+
+  <!-- Format -->
+  <section class="view prose" id="view-format" aria-labelledby="t-format" hidden>
+    <h1 id="t-format">Format des séquences</h1>
+    <p class="muted">Un fichier <code>.airbox.json</code> contient des données seulement : des relais, des attentes et des groupes. Jamais de code.</p>
+    <h2>Les éléments</h2>
+    <div class="panel"><table>
+      <tr><th>Élément</th><th>Effet</th></tr>
+      <tr><td>Commande</td><td>Règle un relais : Air fermer ou ouvrir, Re-Breath ouvrir ou fermer, Aroma démarrer ou arrêter.</td></tr>
+      <tr><td>Attente</td><td>Pause de 1 s à 1 h, fixe ou tirée au hasard entre deux valeurs à chaque passage.</td></tr>
+      <tr><td>Ensemble</td><td>Ses étapes démarrent au même moment. Le groupe se termine avec la plus longue.</td></tr>
+      <tr><td>Répéter</td><td>Joue ses étapes de 1 à 100 fois. Les boucles peuvent en contenir d'autres.</td></tr>
+    </table></div>
+    <h2>Limites</h2>
+    <ul>
+      <li>500 étapes par séquence, 4 niveaux d'imbrication au plus.</li>
+      <li>Au plus 5000 commandes une fois la séquence déroulée.</li>
+      <li>La durée affichée va du cas le plus court au plus long. Les alertes de plafond utilisent le cas le plus long.</li>
+      <li>Le firmware coupe Re-Breath ouvert et Air fermé au bout de leur plafond (120 s par défaut), quelle que soit la séquence.</li>
+    </ul>
+    <h2>En savoir plus</h2>
+    <ul>
+      <li><a href="https://github.com/rubtatex/airbox-sequences/blob/main/FORMAT.md" target="_blank" rel="noopener">Description complète du format</a></li>
+      <li><a href="https://github.com/rubtatex/airbox-sequences/blob/main/schema.json" target="_blank" rel="noopener">Schéma JSON</a></li>
+      <li>Dans l'app Airbox : onglet Séquences, menu ⋯, Parcourir la communauté.</li>
+    </ul>
+  </section>
+</main>
+
+<dialog id="dlg"></dialog>
+<div id="toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+(function () {
+  'use strict';
+
+  // ---- constants: the same bounds as the Airbox app and scripts/build_index.py ----
+  var LIM = { file: 1000000, seqs: 100, steps: 500, depth: 4, repeat: 100, wait: 3600, actions: 5000, visits: 50000, name: 80, text: 500 };
+  var REPO = 'rubtatex/airbox-sequences';
+  var RAW = 'https://raw.githubusercontent.com/' + REPO + '/main/';
+  var RELAYS = {
+    air:      { label: 'Air',       acts: [['close', 'fermer'], ['open', 'ouvrir']],      on: 'close' },
+    rebreath: { label: 'Re-Breath', acts: [['open', 'ouvrir'], ['close', 'fermer']],      on: 'open' },
+    aroma:    { label: 'Aroma',     acts: [['start', 'démarrer'], ['stop', 'arrêter']],   on: 'start' }
+  };
+  var NAME_RE = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+  var DRAFT_KEY = 'airbox-seq-draft', CAPS_KEY = 'airbox-seq-caps';
+
+  // ---- state ----
+  var seq = defaultSequence();
+  var caps = { rebreath: 120, air: 120 };
+  var catalogIndex = null, catalogError = null, catalogLoading = false;
+
+  function defaultSequence() {
+    return {
+      name: 'Respiration carrée', author: '', description: 'Re-Breath en quatre temps égaux, six fois.',
+      steps: [{ type: 'repeat', count: 6, children: [
+        { type: 'relay', relay: 'rebreath', action: 'open' },
+        { type: 'wait', random: false, min: 4, max: 4 },
+        { type: 'relay', relay: 'rebreath', action: 'close' },
+        { type: 'wait', random: true, min: 3, max: 6 }
+      ] }]
+    };
+  }
+
+  // ---- storage (always optional) ----
+  function store(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) { /* private mode */ } }
+  function load(key) { try { var v = localStorage.getItem(key); return v ? JSON.parse(v) : null; } catch (e) { return null; } }
+  function restore() {
+    var d = load(DRAFT_KEY);
+    if (d && typeof d.name === 'string' && Array.isArray(d.steps) && checkShape(d.steps, 0)) seq = d;
+    var c = load(CAPS_KEY);
+    if (c && c.rebreath >= 5 && c.rebreath <= 300 && c.air >= 5 && c.air <= 300) caps = c;
+  }
+  function checkShape(list, depth) {
+    if (depth > 8) return false;
+    return list.every(function (n) {
+      if (!n || typeof n !== 'object') return false;
+      if (n.type === 'relay') return RELAYS[n.relay] && RELAYS[n.relay].acts.some(function (a) { return a[0] === n.action; });
+      if (n.type === 'wait') return typeof n.min === 'number' && typeof n.max === 'number';
+      if (n.type === 'together' || n.type === 'repeat') return Array.isArray(n.children) && checkShape(n.children, depth + 1);
+      return false;
+    });
+  }
+
+  // ---- helpers ----
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function $(id) { return document.getElementById(id); }
+  function energize(relay, action) { return RELAYS[relay].on === action; }
+  function fmt(s) {
+    s = Math.max(0, Math.round(s));
+    if (s < 60) return s + ' s';
+    var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), r = s % 60;
+    if (h) return h + ' h' + (m ? ' ' + m + ' min' : '');
+    return m + ' min' + (r ? ' ' + r + ' s' : '');
+  }
+  function slug(name) {
+    return name.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  }
+  function toast(msg) {
+    var t = $('toast'); t.textContent = msg; t.hidden = false;
+    clearTimeout(toast.timer); toast.timer = setTimeout(function () { t.hidden = true; }, 4000);
+  }
+  function countSteps(list) {
+    return list.reduce(function (n, s) { return n + 1 + (s.children ? countSteps(s.children) : 0); }, 0);
+  }
+  function getContainer(path) {      // path "" = root, "1.0" = children of steps[1].children[0]
+    var list = seq.steps;
+    if (path === '') return list;
+    path.split('.').forEach(function (i) { list = list[+i].children; });
+    return list;
+  }
+  function splitPath(p) { var a = p.split('.').map(Number); return { index: a.pop(), parent: a.join('.') }; }
+  function inRange(v, lo, hi) { return typeof v === 'number' && isFinite(v) && Math.floor(v) === v && v >= lo && v <= hi; }
+
+  // ---- analysis: a port of SequenceAnalysis in the app ----
+  function simulate(nodes, useMax) {
+    var sim = { total: 0, events: [], overflow: false }, visits = 0;
+    function walk(list, start) {
+      var t = start;
+      for (var i = 0; i < list.length; i++) {
+        var n = list[i];
+        visits++;
+        if (sim.overflow || visits > LIM.visits || sim.events.length > LIM.actions) { sim.overflow = true; return t; }
+        if (n.type === 'relay') {
+          sim.events.push({ t: t, order: sim.events.length, relay: n.relay, on: energize(n.relay, n.action) });
+        } else if (n.type === 'wait') {
+          var v = useMax ? Math.max(n.min, n.max) : Math.min(n.min, n.max);
+          t += Math.max(0, isFinite(v) ? v : 0);
+        } else if (n.type === 'together') {
+          var m = t;
+          for (var c = 0; c < n.children.length; c++) m = Math.max(m, walk([n.children[c]], t));
+          t = m;
+        } else if (n.type === 'repeat') {
+          var count = isFinite(n.count) ? Math.max(0, n.count) : 0;
+          for (var k = 0; k < count; k++) { t = walk(n.children, t); if (sim.overflow) return t; }
+        }
+      }
+      return t;
+    }
+    sim.total = walk(nodes, 0);
+    return sim;
+  }
+  function analyse(nodes) {
+    var worst = simulate(nodes, true), best = simulate(nodes, false);
+    var events = worst.events.slice().sort(function (a, b) { return a.t - b.t || a.order - b.order; });
+    var since = {}, longest = {}, used = [];
+    events.forEach(function (e) {
+      if (used.indexOf(e.relay) < 0) used.push(e.relay);
+      if (e.on && since[e.relay] === undefined) since[e.relay] = e.t;
+      if (!e.on && since[e.relay] !== undefined) {
+        longest[e.relay] = Math.max(longest[e.relay] || 0, e.t - since[e.relay]);
+        delete since[e.relay];
+      }
+    });
+    Object.keys(since).forEach(function (r) { longest[r] = Math.max(longest[r] || 0, worst.total - since[r]); });
+    var warnings = [];
+    [['rebreath', caps.rebreath], ['air', caps.air]].forEach(function (p) {
+      if (longest[p[0]] !== undefined && longest[p[0]] > p[1]) warnings.push({ relay: p[0], seconds: longest[p[0]], cap: p[1] });
+    });
+    return {
+      max: worst.total, min: Math.min(best.total, worst.total), actions: events.length, relays: ['air', 'rebreath', 'aroma'].filter(function (r) { return used.indexOf(r) >= 0; }),
+      warnings: warnings, tooLarge: worst.overflow || best.overflow
+    };
+  }
+
+  // ---- validation: the same rules as the app and scripts/build_index.py ----
+  function problems() {
+    var out = [];
+    if (!seq.name.trim()) out.push('Donnez un nom à la séquence.');
+    if (!seq.steps.length) out.push('Ajoutez au moins une étape.');
+    var total = countSteps(seq.steps);
+    if (total > LIM.steps) out.push('Trop d\'étapes : ' + total + ' sur ' + LIM.steps + ' au plus.');
+    var bad = 0;
+    (function walk(list) {
+      list.forEach(function (n) {
+        if (n.type === 'wait') {
+          if (!inRange(n.min, 1, LIM.wait) || !inRange(n.max, 1, LIM.wait) || n.min > n.max) bad++;
+        } else if (n.type === 'repeat') {
+          if (!inRange(n.count, 1, LIM.repeat)) bad++;
+        }
+        if (n.children) walk(n.children);
+      });
+    })(seq.steps);
+    if (bad) out.push(bad + (bad > 1 ? ' valeurs sont' : ' valeur est') + ' hors limites (attentes de 1 à 3600 s, répétitions de 1 à 100).');
+    if (!bad && analyse(seq.steps).tooLarge) out.push('Séquence trop grande : au plus ' + LIM.actions + ' commandes une fois déroulée.');
+    return out;
+  }
+
+  // ---- file format ----
+  function stepToFile(n) {
+    if (n.type === 'relay') return { relay: n.relay, 'do': n.action };
+    if (n.type === 'wait') return { wait: n.min === n.max || !n.random ? n.min : { min: Math.min(n.min, n.max), max: Math.max(n.min, n.max) } };
+    if (n.type === 'together') return { together: n.children.map(stepToFile) };
+    return { repeat: n.count, steps: n.children.map(stepToFile) };
+  }
+  function toFile() {
+    var f = { format: 'airbox-sequence', version: 1, name: seq.name.trim() };
+    if (seq.author.trim()) f.author = seq.author.trim();
+    if (seq.description.trim()) f.description = seq.description.trim();
+    f.steps = seq.steps.map(stepToFile);
+    return f;
+  }
+  function Invalid(msg) { this.message = msg; }
+  function fileStep(s, depth, budget) {
+    budget.n--;
+    if (budget.n < 0) throw new Invalid('trop d\'étapes');
+    if (!s || typeof s !== 'object' || Array.isArray(s)) throw new Invalid('une étape doit être un objet');
+    var shapes = [('relay' in s) || ('do' in s), 'wait' in s, 'together' in s, ('repeat' in s) || ('steps' in s)];
+    if (shapes.filter(Boolean).length !== 1) throw new Invalid('chaque étape est une commande, une attente, un groupe « ensemble » ou « répéter »');
+    if (shapes[0]) {
+      if (!RELAYS[s.relay] || !RELAYS[s.relay].acts.some(function (a) { return a[0] === s['do']; })) throw new Invalid('commande invalide');
+      return { type: 'relay', relay: s.relay, action: s['do'] };
+    }
+    if (shapes[1]) {
+      var w = s.wait, lo, hi, random = false;
+      if (typeof w === 'number') { lo = hi = w; }
+      else if (w && typeof w === 'object' && typeof w.min === 'number' && typeof w.max === 'number') { lo = w.min; hi = w.max; random = lo !== hi; }
+      else throw new Invalid('une attente est un nombre de secondes ou {min, max}');
+      if (!inRange(lo, 1, LIM.wait) || !inRange(hi, 1, LIM.wait) || lo > hi) throw new Invalid('une attente va de 1 à ' + LIM.wait + ' secondes, avec min ≤ max');
+      return { type: 'wait', random: random, min: lo, max: hi };
+    }
+    if (depth >= LIM.depth) throw new Invalid('groupes imbriqués sur trop de niveaux');
+    if (shapes[2]) {
+      if (!Array.isArray(s.together)) throw new Invalid('« together » est une liste');
+      return { type: 'together', children: s.together.map(function (c) { return fileStep(c, depth + 1, budget); }) };
+    }
+    if (!inRange(s.repeat, 1, LIM.repeat) || !Array.isArray(s.steps)) throw new Invalid('une répétition demande un nombre de 1 à ' + LIM.repeat + ' et ses étapes');
+    return { type: 'repeat', count: s.repeat, children: s.steps.map(function (c) { return fileStep(c, depth + 1, budget); }) };
+  }
+  function parseFile(text) {
+    if (text.length > LIM.file) throw new Invalid('fichier trop gros');
+    var data;
+    try { data = JSON.parse(text); } catch (e) { throw new Invalid('ce fichier n\'est pas du JSON valide'); }
+    if (!data || data.format !== 'airbox-sequence') throw new Invalid('ce fichier n\'est pas une séquence Airbox');
+    if (!(data.version >= 1 && data.version <= 1)) throw new Invalid('version de format non prise en charge : ' + data.version);
+    var items;
+    if (Array.isArray(data.sequences)) {
+      if (data.sequences.length > LIM.seqs) throw new Invalid('trop de séquences dans ce fichier');
+      items = data.sequences;
+    } else if (Array.isArray(data.steps)) items = [data];
+    else throw new Invalid('ce fichier n\'est pas une séquence Airbox');
+    if (!items.length) throw new Invalid('aucune séquence dans ce fichier');
+    return items.map(function (it) {
+      var budget = { n: LIM.steps };
+      var steps = (it.steps || []).map(function (s) { return fileStep(s, 0, budget); });
+      var out = {
+        name: (typeof it.name === 'string' && it.name.trim() ? it.name.trim() : 'Séquence importée').slice(0, LIM.name),
+        author: typeof it.author === 'string' ? it.author.trim().slice(0, LIM.text) : '',
+        description: typeof it.description === 'string' ? it.description.trim().slice(0, LIM.text) : '',
+        steps: steps
+      };
+      if (analyse(steps).tooLarge) throw new Invalid('cette séquence est trop grande pour être jouée');
+      return out;
+    });
+  }
+
+  // ---- editor rendering ----
+  function waitInputs(n, path) {
+    function num(field, v) {
+      var bad = !inRange(v, 1, LIM.wait);
+      return '<input class="num' + (bad ? ' bad' : '') + '" type="number" min="1" max="' + LIM.wait + '" inputmode="numeric" data-field="' + field + '" data-path="' + path + '" value="' + (isFinite(v) ? v : '') + '" aria-label="' + (field === 'max' ? 'Maximum en secondes' : field === 'min' ? 'Minimum en secondes' : 'Durée en secondes') + '">';
+    }
+    return n.random
+      ? num('min', n.min) + '<span class="sub">à</span>' + num('max', n.max) + '<span class="sub">s</span>'
+      : num('fixed', n.min) + '<span class="sub">s</span>';
+  }
+  function menu(path, i, len) {
+    return '<details class="menu"><summary aria-label="Actions sur cette étape">⋯</summary><div class="menu-list">' +
+      '<button type="button" data-act="up" data-path="' + path + '"' + (i === 0 ? ' disabled' : '') + '>Monter</button>' +
+      '<button type="button" data-act="down" data-path="' + path + '"' + (i === len - 1 ? ' disabled' : '') + '>Descendre</button>' +
+      '<button type="button" data-act="dup" data-path="' + path + '">Dupliquer</button>' +
+      '<button type="button" class="danger" data-act="del" data-path="' + path + '">Supprimer</button></div></details>';
+  }
+  function addRow(path, depth) {          // depth = depth of the children of this container
+    var full = countSteps(seq.steps) >= LIM.steps, groupsOff = depth >= LIM.depth || full;
+    function b(kind, label, off) { return '<button type="button" class="btn alt sm" data-act="add" data-kind="' + kind + '" data-path="' + path + '"' + (off ? ' disabled' : '') + '>+ ' + label + '</button>'; }
+    return b('relay', 'Commande', full) + b('wait', 'Attente', full) + b('together', 'Ensemble', groupsOff) + b('repeat', 'Répéter', groupsOff);
+  }
+  function renderList(list, parentPath, depth) {
+    return list.map(function (n, i) {
+      var path = parentPath === '' ? String(i) : parentPath + '.' + i;
+      var m = menu(path, i, list.length), head, nest = '';
+      if (n.type === 'relay') {
+        head = '<span class="tag t-relay">Commande</span>' +
+          '<select class="sel" data-field="relay" data-path="' + path + '" aria-label="Relais">' + Object.keys(RELAYS).map(function (k) { return '<option value="' + k + '"' + (k === n.relay ? ' selected' : '') + '>' + RELAYS[k].label + '</option>'; }).join('') + '</select>' +
+          '<select class="sel" data-field="action" data-path="' + path + '" aria-label="Action">' + RELAYS[n.relay].acts.map(function (a) { return '<option value="' + a[0] + '"' + (a[0] === n.action ? ' selected' : '') + '>' + a[1] + '</option>'; }).join('') + '</select>';
+      } else if (n.type === 'wait') {
+        head = '<span class="tag ' + (n.random ? 't-rand' : 't-wait') + '">' + (n.random ? 'Au hasard' : 'Attente') + '</span>' +
+          '<select class="sel" data-field="mode" data-path="' + path + '" aria-label="Type d\'attente"><option value="fixed"' + (n.random ? '' : ' selected') + '>fixe</option><option value="random"' + (n.random ? ' selected' : '') + '>au hasard</option></select>' +
+          waitInputs(n, path);
+      } else if (n.type === 'repeat') {
+        var badc = !inRange(n.count, 1, LIM.repeat);
+        head = '<span class="tag t-group">Répéter</span><input class="num' + (badc ? ' bad' : '') + '" type="number" min="1" max="' + LIM.repeat + '" inputmode="numeric" data-field="count" data-path="' + path + '" value="' + (isFinite(n.count) ? n.count : '') + '" aria-label="Nombre de répétitions"><span class="sub">fois</span>';
+        nest = '<div class="nest">' + renderList(n.children, path, depth + 1) + '<div class="add">' + addRow(path, depth + 1) + '</div></div>';
+      } else {
+        head = '<span class="tag t-group">Ensemble</span><span class="sub">les étapes démarrent en même temps</span>';
+        nest = '<div class="nest">' + renderList(n.children, path, depth + 1) + '<div class="add">' + addRow(path, depth + 1) + '</div></div>';
+      }
+      return '<div class="step"><div class="line">' + head + m + '</div>' + nest + '</div>';
+    }).join('');
+  }
+  function render() {
+    $('steps').innerHTML = seq.steps.length ? renderList(seq.steps, '', 1) : '<div class="empty">Aucune étape. Ajoutez une commande, une attente ou un groupe.</div>';
+    $('root-add').innerHTML = addRow('', 1);
+    updateSide();
+  }
+  function updateSide() {
+    var a = analyse(seq.steps), probs = problems();
+    $('a-duration').textContent = a.min === a.max ? fmt(a.max) : fmt(a.min) + ' à ' + fmt(a.max);
+    $('a-meta').textContent = a.actions + (a.actions > 1 ? ' actions' : ' action') + (a.relays.length ? ' · ' + a.relays.map(function (r) { return RELAYS[r].label; }).join(', ') : '');
+    var html = '';
+    if (probs.length) {
+      html = '<div class="status bad"><div class="stack">' + probs.map(function (p) { return '<div>' + esc(p) + '</div>'; }).join('') + '</div></div>';
+    } else if (a.warnings.length) {
+      html = '<div class="status warn"><div class="stack">' + a.warnings.map(function (w) {
+        var verb = w.relay === 'rebreath' ? 'reste ouvert' : 'reste fermé';
+        return '<div>' + RELAYS[w.relay].label + ' ' + verb + ' ' + w.seconds + ' s<span> Le firmware coupe à ' + w.cap + ' s : la séquence continue, mais le relais revient à l\'état sûr avant la fin de cette étape.</span></div>';
+      }).join('') + '</div></div>';
+    } else {
+      html = '<div class="status ok">Dans les plafonds</div>';
+    }
+    $('a-status').innerHTML = html;
+    $('b-propose').disabled = probs.length > 0;
+    $('b-export').disabled = probs.length > 0;
+    store(DRAFT_KEY, seq);
+  }
+
+  // ---- editor events ----
+  function addNode(kind) {
+    if (kind === 'relay') return { type: 'relay', relay: 'rebreath', action: 'open' };
+    if (kind === 'wait') return { type: 'wait', random: false, min: 10, max: 10 };
+    if (kind === 'together') return { type: 'together', children: [] };
+    return { type: 'repeat', count: 2, children: [] };
+  }
+  function clone(n) { return JSON.parse(JSON.stringify(n)); }
+  function onClick(e) {
+    var btn = e.target.closest('[data-act]');
+    if (!btn || btn.disabled) return;
+    var act = btn.getAttribute('data-act'), path = btn.getAttribute('data-path');
+    if (act === 'add') {
+      getContainer(path).push(addNode(btn.getAttribute('data-kind')));
+    } else {
+      var p = splitPath(path), list = getContainer(p.parent);
+      if (act === 'del') list.splice(p.index, 1);
+      else if (act === 'dup') list.splice(p.index + 1, 0, clone(list[p.index]));
+      else if (act === 'up' && p.index > 0) { var t = list[p.index]; list[p.index] = list[p.index - 1]; list[p.index - 1] = t; }
+      else if (act === 'down' && p.index < list.length - 1) { var u = list[p.index]; list[p.index] = list[p.index + 1]; list[p.index + 1] = u; }
+    }
+    render();
+  }
+  function onField(e) {
+    var el = e.target, field = el.getAttribute('data-field');
+    if (!field) return;
+    var p = splitPath(el.getAttribute('data-path')), n = getContainer(p.parent)[p.index];
+    var isSelect = el.tagName === 'SELECT', v = isSelect ? el.value : (el.value === '' ? NaN : Number(el.value));
+    if (field === 'relay') { n.relay = v; n.action = RELAYS[v].acts[0][0]; render(); return; }
+    if (field === 'action') { n.action = v; updateSide(); return; }
+    if (field === 'mode') {
+      if (v === 'random') { n.random = true; n.max = inRange(n.min, 1, LIM.wait) ? Math.min(LIM.wait, n.min * 2) : n.min; }
+      else { n.random = false; n.max = n.min; }
+      render(); return;
+    }
+    if (field === 'fixed') { n.min = v; n.max = v; }
+    else if (field === 'min') n.min = v;
+    else if (field === 'max') n.max = v;
+    else if (field === 'count') n.count = v;
+    var lo = field === 'count' ? 1 : 1, hi = field === 'count' ? LIM.repeat : LIM.wait;
+    var bad = !inRange(v, lo, hi) || (n.type === 'wait' && n.random && n.min > n.max);
+    el.classList.toggle('bad', bad);
+    updateSide();
+  }
+
+  // ---- dialogs ----
+  var dlg = $('dlg');
+  function openDialog(html, onReady) {
+    dlg.innerHTML = html;
+    if (!dlg.open) dlg.showModal();
+    dlg.querySelectorAll('[data-close]').forEach(function (b) { b.addEventListener('click', function () { dlg.close(); }); });
+    if (onReady) onReady(dlg);
+  }
+  function confirmReplace(then) {
+    if (!seq.steps.length) { then(); return; }
+    openDialog('<h3>Remplacer la séquence en cours ?</h3><div class="body"><p>La séquence « ' + esc(seq.name || 'sans nom') + ' » sera remplacée. Pensez à l\'exporter d\'abord si vous voulez la garder.</p>' +
+      '<div class="actions"><button class="btn alt" data-close type="button">Annuler</button><button class="btn" id="d-ok" type="button">Remplacer</button></div></div>',
+      function () { $('d-ok').addEventListener('click', function () { dlg.close(); then(); }); });
+  }
+  function setSequence(s) {
+    seq = s;
+    $('f-name').value = seq.name; $('f-author').value = seq.author; $('f-desc').value = seq.description;
+    render();
+  }
+  function openParsed(list, label) {
+    function use(s) { confirmReplace(function () { setSequence(s); location.hash = '#editeur'; toast('« ' + s.name + ' » ouverte dans l\'éditeur.'); }); }
+    if (list.length === 1) { use(list[0]); return; }
+    openDialog('<h3>Choisissez une séquence</h3><div class="body"><p class="sub">' + esc(label) + ' contient ' + list.length + ' séquences.</p><div class="choice">' +
+      list.map(function (s, i) { return '<button type="button" data-i="' + i + '">' + esc(s.name) + '</button>'; }).join('') +
+      '</div><div class="actions"><button class="btn alt" data-close type="button">Annuler</button></div></div>',
+      function (d) { d.querySelectorAll('[data-i]').forEach(function (b) { b.addEventListener('click', function () { d.close(); use(list[+b.getAttribute('data-i')]); }); }); });
+  }
+
+  // ---- export / import ----
+  function onExport() {
+    if (problems().length) return;
+    var text = JSON.stringify(toFile(), null, 2) + '\n';
+    var url = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
+    var a = document.createElement('a');
+    a.href = url; a.download = (slug(seq.name) || 'sequence') + '.airbox.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+    toast('Fichier exporté.');
+  }
+  function onFile(e) {
+    var f = e.target.files[0]; e.target.value = '';
+    if (!f) return;
+    if (f.size > LIM.file) { toast('Fichier trop gros.'); return; }
+    var r = new FileReader();
+    r.onload = function () {
+      try { openParsed(parseFile(String(r.result)), f.name); }
+      catch (err) { toast(err instanceof Invalid ? 'Import impossible : ' + err.message + '.' : 'Import impossible.'); }
+    };
+    r.readAsText(f);
+  }
+
+  // ---- propose ----
+  function newFileUrl(file, name) {
+    var base = 'https://github.com/' + REPO + '/new/main/sequences?filename=' + encodeURIComponent(file) + '&message=' + encodeURIComponent('Ajouter ' + name) + '&value=';
+    var pretty = base + encodeURIComponent(JSON.stringify(toFile(), null, 2) + '\n');
+    if (pretty.length <= 7500) return pretty;
+    var compact = base + encodeURIComponent(JSON.stringify(toFile()) + '\n');
+    return compact.length <= 7500 ? compact : null;
+  }
+  function onPropose() {
+    if (problems().length) return;
+    var initial = slug(seq.name);
+    openDialog('<h3>Proposer « ' + esc(seq.name.trim()) + ' »</h3><div class="body">' +
+      '<ol><li>Vérifiez le nom et l\'auteur : ils seront publiés tels quels.</li><li>GitHub s\'ouvre sur un nouveau fichier déjà rempli. Connectez-vous si besoin.</li><li>Cliquez « Propose new file », puis « Create pull request ».</li></ol>' +
+      '<div class="field"><label for="d-file">Nom du fichier</label><div style="display:flex;gap:6px;align-items:center"><input class="input" id="d-file" value="' + esc(initial) + '" autocomplete="off" spellcheck="false"><span class="mono">.airbox.json</span></div><span class="err" id="d-err"></span></div>' +
+      '<p class="sub">Une vérification automatique contrôle le fichier, et un mainteneur relit chaque proposition avant fusion.' + (seq.author.trim() ? '' : ' Pensez à renseigner l\'auteur si vous voulez être crédité.') + '</p>' +
+      '<div class="actions"><button class="btn alt" data-close type="button">Annuler</button><button class="btn" id="d-go" type="button">Ouvrir GitHub ↗</button></div></div>',
+      function () {
+        var input = $('d-file'), err = $('d-err'), go = $('d-go');
+        function check() {
+          var v = input.value.trim(), msg = '';
+          if (!NAME_RE.test(v)) msg = 'Lettres minuscules, chiffres et tirets seulement.';
+          else if (catalogIndex && catalogIndex.sequences.some(function (s) { return s.id === v; })) msg = 'Ce nom existe déjà dans le catalogue : choisissez-en un autre.';
+          err.textContent = msg; go.disabled = !!msg;
+        }
+        input.addEventListener('input', check); check();
+        if (!catalogIndex) loadCatalog().then(check);
+        go.addEventListener('click', function () {
+          var url = newFileUrl(input.value.trim() + '.airbox.json', seq.name.trim());
+          if (!url) { err.textContent = 'La séquence est trop longue pour un lien. Exportez le fichier, puis ajoutez-le à la main sur GitHub.'; return; }
+          window.open(url, '_blank', 'noopener');
+          dlg.close();
+        });
+      });
+  }
+
+  // ---- catalog ----
+  function loadCatalog() {
+    if (catalogIndex) return Promise.resolve();
+    if (catalogLoading) return catalogLoading;
+    catalogError = null;
+    catalogLoading = fetch(RAW + 'index.json', { cache: 'no-cache' })
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function (j) { if (!j || !Array.isArray(j.sequences)) throw new Error('index invalide'); catalogIndex = j; })
+      .catch(function (e) { catalogError = e.message; })
+      .then(function () { catalogLoading = false; renderCatalog(); });
+    renderCatalog();
+    return catalogLoading;
+  }
+  function renderCatalog() {
+    var el = $('catalog');
+    if (catalogLoading) { el.innerHTML = '<p class="muted">Chargement du catalogue…</p>'; return; }
+    if (catalogError) { el.innerHTML = '<div class="status bad">Le catalogue n\'a pas pu être chargé (' + esc(catalogError) + ').</div><p style="margin-top:12px"><button class="btn alt" id="c-retry" type="button">Réessayer</button></p>'; $('c-retry').addEventListener('click', loadCatalog); return; }
+    if (!catalogIndex) { el.innerHTML = ''; return; }
+    if (!catalogIndex.sequences.length) { el.innerHTML = '<div class="empty">Le catalogue est vide pour l\'instant. Soyez le premier à proposer une séquence.</div>'; return; }
+    el.innerHTML = '<div class="panel tablewrap"><table><thead><tr><th>Séquence</th><th>Auteur</th><th>Durée</th><th>Relais</th><th></th></tr></thead><tbody>' +
+      catalogIndex.sequences.map(function (s, i) {
+        return '<tr><td><b>' + esc(s.name) + '</b>' + (s.description ? '<span class="desc">' + esc(s.description) + '</span>' : '') + '</td><td>' + esc(s.author || '') + '</td><td>' +
+          (typeof s.durationSeconds === 'number' ? 'jusqu\'à ' + fmt(s.durationSeconds) : '') + '</td><td>' +
+          esc((s.relays || []).map(function (r) { return RELAYS[r] ? RELAYS[r].label : r; }).join(', ')) + '</td><td class="act"><button class="btn alt sm" type="button" data-open="' + i + '">Ouvrir dans l\'éditeur</button></td></tr>';
+      }).join('') + '</tbody></table></div>';
+    el.querySelectorAll('[data-open]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var s = catalogIndex.sequences[+b.getAttribute('data-open')];
+        if (!s || typeof s.path !== 'string' || !/^sequences\/[a-z0-9-]+\.airbox\.json$/.test(s.path)) { toast('Entrée de catalogue invalide.'); return; }
+        b.disabled = true;
+        fetch(RAW + s.path, { cache: 'no-cache' })
+          .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+          .then(function (t) { openParsed(parseFile(t), s.name); })
+          .catch(function (err) { toast('Impossible d\'ouvrir cette séquence' + (err instanceof Invalid ? ' : ' + err.message : '') + '.'); })
+          .then(function () { b.disabled = false; });
+      });
+    });
+  }
+
+  // ---- routing ----
+  function route() {
+    var h = (location.hash || '#editeur').slice(1);
+    if (['editeur', 'catalogue', 'format'].indexOf(h) < 0) h = 'editeur';
+    ['editeur', 'catalogue', 'format'].forEach(function (v) { $('view-' + v).hidden = v !== h; });
+    document.querySelectorAll('[data-nav]').forEach(function (a) {
+      if (a.getAttribute('data-nav') === h) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    if (h === 'catalogue') loadCatalog();
+    document.title = (h === 'editeur' ? 'Éditeur' : h === 'catalogue' ? 'Catalogue' : 'Format') + ' · Séquences Airbox';
+  }
+
+  // ---- init ----
+  restore();
+  $('f-name').value = seq.name; $('f-author').value = seq.author; $('f-desc').value = seq.description;
+  $('cap-rebreath').value = caps.rebreath; $('cap-air').value = caps.air;
+  ['f-name', 'f-author', 'f-desc'].forEach(function (id) {
+    $(id).addEventListener('input', function () { seq.name = $('f-name').value; seq.author = $('f-author').value; seq.description = $('f-desc').value; updateSide(); });
+  });
+  ['rebreath', 'air'].forEach(function (k) {
+    $('cap-' + k).addEventListener('input', function (e) {
+      var v = Number(e.target.value), ok = inRange(v, 5, 300);
+      e.target.classList.toggle('bad', !ok);
+      if (ok) { caps[k] = v; store(CAPS_KEY, caps); updateSide(); }
+    });
+  });
+  $('view-editeur').addEventListener('click', onClick);
+  $('view-editeur').addEventListener('change', onField);
+  $('view-editeur').addEventListener('input', function (e) { if (e.target.tagName === 'INPUT' && e.target.getAttribute('data-field')) onField(e); });
+  document.addEventListener('click', function (e) {
+    document.querySelectorAll('details.menu[open]').forEach(function (d) { if (!d.contains(e.target)) d.removeAttribute('open'); });
+  });
+  $('b-export').addEventListener('click', onExport);
+  $('b-propose').addEventListener('click', onPropose);
+  $('b-import').addEventListener('click', function () { $('file').click(); });
+  $('file').addEventListener('change', onFile);
+  $('b-new').addEventListener('click', function () {
+    confirmReplace(function () { setSequence({ name: '', author: '', description: '', steps: [] }); $('f-name').focus(); });
+  });
+  window.addEventListener('hashchange', route);
+  render(); route();
+  window.__airbox = { analyse: analyse, parseFile: parseFile, toFile: toFile, setSequence: setSequence, problems: problems, newFileUrl: newFileUrl };
+})();
+</script>
+</body>
+</html>

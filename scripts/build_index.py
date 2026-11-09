@@ -3,7 +3,9 @@
 
 Applies the same bounds as the Airbox app, so a file accepted here imports in the app.
     python3 scripts/build_index.py          rewrite index.json
-    python3 scripts/build_index.py --check  fail if index.json is out of date (used by CI)
+    python3 scripts/build_index.py --check  fail if index.json is out of date
+    python3 scripts/build_index.py --files-only  validate the files, ignore index.json (pull requests)
+The workflow "Update index" rewrites index.json after every merge, so contributors only add their file.
 """
 import json
 import re
@@ -173,6 +175,9 @@ def main():
         print("\n".join(errors), file=sys.stderr)
         return 1
     target = ROOT / "index.json"
+    if "--files-only" in sys.argv:
+        print("sequence files are valid")
+        return 0
     if "--check" in sys.argv:
         if not target.exists() or target.read_text(encoding="utf-8") != text:
             print("index.json is out of date: run python3 scripts/build_index.py", file=sys.stderr)
